@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "paths",
+  "info": {
+    "singularName": "path",
+    "pluralName": "paths",
+    "displayName": "Paths"
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "options": {
+    "draftAndPublish": false,
+    "comment": ""
+  },
+  "attributes": {
+    "path": {
+      "type": "string"
+    },
+    "model_uid": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "biginteger"
+    },
+    "entity_title": {
+      "type": "string"
+    },
+    "json_category": {
+      "type": "json"
+    },
+    "is_published": {
+      "type": "boolean"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::paths.pathscategory"
+    }
+  }
+}
