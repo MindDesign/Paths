@@ -12,6 +12,51 @@ This is where the categories are created, and from which where the path and brea
 
 A Path category has a name, a parent and children. 
 
+Path category schema
+
+```
+{
+  "kind": "collectionType",
+  "collectionName": "pathscategories",
+  "info": {
+    "singularName": "pathscategory",
+    "pluralName": "pathscategories",
+    "displayName": "Paths category",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::paths.pathscategory",
+      "inversedBy": "children"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::paths.pathscategory",
+      "mappedBy": "parent"
+    },
+    "path": {
+      "type": "customField",
+      "customField": "plugin::paths.path"
+    }
+  }
+}
+```
+
 
 ## Path
 
