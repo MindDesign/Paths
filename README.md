@@ -67,3 +67,54 @@ When creating or updating an entity like article or page, the path and breadcrum
 
 ![paths-paths](https://github.com/MindDesign/paths/assets/6894169/c44f26df-e8ca-489a-9dd5-8d01598efb0e)
 *List of paths created*
+
+### Path schema
+
+```
+{
+  "kind": "collectionType",
+  "collectionName": "paths",
+  "info": {
+    "singularName": "path",
+    "pluralName": "paths",
+    "displayName": "Paths"
+  },
+  "pluginOptions": {
+    "content-manager": {
+      "visible": true
+    },
+    "content-type-builder": {
+      "visible": true
+    }
+  },
+  "options": {
+    "draftAndPublish": false,
+    "comment": ""
+  },
+  "attributes": {
+    "path": {
+      "type": "string"
+    },
+    "model_uid": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "biginteger"
+    },
+    "entity_title": {
+      "type": "string"
+    },
+    "json_category": {
+      "type": "json"
+    },
+    "is_published": {
+      "type": "boolean"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::paths.pathscategory"
+    }
+  }
+}
+```
