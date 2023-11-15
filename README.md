@@ -12,7 +12,7 @@ This is where the categories are created, and from which where the path and brea
 
 A Path category has a name, a parent and children. 
 
-Path category schema
+### Path category schema
 
 ```
 {
