@@ -1,6 +1,19 @@
-# Strapi plugin paths
+# Paths
 
-A quick description of paths.
+Paths consist of two content types:
+- Path category
+- Path
+
+## Path category
+
+This is where the categories are created, and from which where the path and breadcrumbs are created
+
+A Path category has a name, a parent and children. 
+
+
+## Path
+
+When creating or updating an entity like article or page, the path and breadcrumbs are created from the selected Path category and title and slug of the page or article. In the table, the entity ID together with the entity uid is stored. 
 
 ![paths-paths](https://github.com/MindDesign/paths/assets/6894169/c44f26df-e8ca-489a-9dd5-8d01598efb0e)
 
