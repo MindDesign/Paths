@@ -10,7 +10,7 @@ Paths consist of two content types:
 
 This is where the categories are created, and from which where the path and breadcrumbs are created
 
-A Path category has a name, a parent and children. 
+A Path category has a name, a slug, a parent and children. 
 
 ### Path category schema
 
@@ -60,7 +60,7 @@ A Path category has a name, a parent and children.
 
 ## Path
 
-When creating or updating an entity like article or page, the path and breadcrumbs are created from the selected Path category and title and slug of the page or article. In the table, the path, entity ID together with the model uid and breadcrumbs json is stored. 
+When creating or updating an entity like article or page, the path and breadcrumbs are created from the selected Path category and title and slug of the page or article. In the table, the path, entity ID together with the model uid and breadcrumbs json (`json_category`) is stored. 
 
 ![paths-create-entry](https://github.com/MindDesign/paths/assets/6894169/207d56ed-ad4d-493a-ac6c-7e9640a6b5e5)
 *Editing or creating an entity that has Paths activated on it*
