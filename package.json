@@ -1,37 +1,29 @@
 {
-  "name": "paths",
-  "version": "0.0.0",
-  "description": "This is the description of the plugin.",
+  "name": "strapi-plugin-paths",
+  "version": "0.0.1",
+  "description": "A way to fetch Strapi content, and create breadcrumbs based on front end urls.",
   "strapi": {
     "name": "paths",
-    "description": "Description of Paths plugin",
+    "description": "A way to fetch Strapi content, and create breadcrumbs based on front end urls.",
     "kind": "plugin",
     "displayName": "Paths"
   },
-  "dependencies": {
-    "@strapi/design-system": "^1.6.3",
-    "@strapi/helper-plugin": "^4.6.0",
-    "@strapi/icons": "^1.6.3",
-    "prop-types": "^15.7.2"
-  },
-  "devDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^5.3.4",
-    "styled-components": "^5.3.6"
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MindDesign/paths"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^5.3.4",
-    "styled-components": "^5.3.6"
+    "@strapi/strapi": "^4.0.0"
   },
   "author": {
-    "name": "A Strapi developer"
+    "name": "Tommy Eliassen",
+    "email": "tommy@minddesign.no"
   },
   "maintainers": [
     {
-      "name": "A Strapi developer"
+      "name": "Tommy Elilassen"
     }
   ],
   "engines": {
