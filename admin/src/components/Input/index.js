@@ -19,6 +19,8 @@ export default function Index({
   required,
   value
 }) {
+  const [data, setData] = useState();
+  const [tree, setTree] = useState();
   const [categories, setCategories] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [path, setPath] = useState();
@@ -74,13 +76,15 @@ export default function Index({
       parentEl.children = [...(parentEl.children || []), el];
     });
 
+    setTree(root);
+
     return root;
   }
 
   // Build the structure for selecting category
-  const buildSelectStructure = async (datastructure, tree) => {
+  const buildSelectStructure = async (selectstructure, tree) => {
     tree.map((branch) => {      
-      datastructure.push({
+      selectstructure.push({
         "name": branch.name, 
         "slug": branch.slug, 
         "fullPath": branch.fullPath, 
@@ -88,7 +92,7 @@ export default function Index({
         "depth": branch.depthIndicator
       });
       if (Array.isArray(branch.children)) {
-        buildSelectStructure(datastructure, branch.children);
+        buildSelectStructure(selectstructure, branch.children);
       }
     });
   }
@@ -96,18 +100,36 @@ export default function Index({
   // Get categories
   const getCategories = async () => {
     const { data } = await get('/paths/pathscategories');
+    setData(data);
     const root = await buildTreeStructure(data);
-    const datastructure = [];
-    await buildSelectStructure(datastructure, root);
-    console.log(datastructure);
-    setCategories(datastructure);
+    const selectstructure = [];
+    await buildSelectStructure(selectstructure, root);
+    console.log(selectstructure);
+    setCategories(selectstructure);
   }
 
   const selectCategory = (value) => {
-    console.log(value);
+    const selectedCategory = categories.filter((el) => el.categoryId == value)[0];
+    
+    console.log(selectedCategory);
+
+    console.log(data);
+
+    let listElements = [];
+    listElements.push(selectedCategory);
+
+    let parentId = selectedCategory.parent;
+    // while (parentId !== null) {
+
+    //   let curEl = data.filter(el => el.categoryId == parentId);
+    //   listElements.push(curEl);
+    //   parentId = data.filter(el => el.categoryId == curEl.parent).parent;
+    // }
+
+    console.log("List elements: ", listElements);
   }
 
-  const categoryList = categories.map(element => <SingleSelectOption value={element.name}>{depthMap[element.depth]} {element.name}</SingleSelectOption>)
+  const categoryList = categories.map(element => <SingleSelectOption value={element.categoryId}>{depthMap[element.depth]} {element.name}</SingleSelectOption>)
 
   return (<SingleSelect label="Velg kategori" placeholder="Velg kategori..." onClear={() => {
     setCategoryId(undefined);
@@ -119,7 +141,7 @@ export default function Index({
 
 /**
 
-datastructure:  [
+selectstructure:  [
   {
     "name": "Regntøy",
     "slug": "regntoy",
