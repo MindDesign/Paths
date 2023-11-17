@@ -33,6 +33,10 @@ export default function Index({
     getCategories()
   }, []);
 
+  useEffect(() => {
+    //console.log(JSON.stringify(breadcrumbs, null, 2))
+  }, [breadcrumbs])
+
   const depthMap = {
     "5" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
     "4" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
@@ -104,29 +108,34 @@ export default function Index({
     const root = await buildTreeStructure(data);
     const selectstructure = [];
     await buildSelectStructure(selectstructure, root);
-    console.log(selectstructure);
     setCategories(selectstructure);
   }
 
-  const selectCategory = (value) => {
-    const selectedCategory = categories.filter((el) => el.categoryId == value)[0];
-    
-    console.log(selectedCategory);
+  // Generate breadcrumbs (selected category and all its parents)
+  const generateBreadcrumbs = async (crumbs, categoryId) => {
+    let selectedCategory = data.filter((el) => el.id == categoryId)[0];
+    crumbs.push({
+      "name": selectedCategory.name,
+      "slug": selectedCategory.fullPath
+    });
 
-    console.log(data);
+    while (selectedCategory.parent !== null) {
+      let curEl = data.filter((el) => { return el.id === selectedCategory.parent.id });
+      crumbs.push({
+        "name": curEl[0].name,
+        "slug": curEl[0].fullPath
+      });
+      selectedCategory = curEl[0];
+    }
 
-    let listElements = [];
-    listElements.push(selectedCategory);
-
-    let parentId = selectedCategory.parent;
-    // while (parentId !== null) {
-
-    //   let curEl = data.filter(el => el.categoryId == parentId);
-    //   listElements.push(curEl);
-    //   parentId = data.filter(el => el.categoryId == curEl.parent).parent;
-    // }
-
-    console.log("List elements: ", listElements);
+    crumbs.reverse();
+  }
+  
+  // Select category
+  const selectCategory = async (value) => {
+    const crumbs = [];
+    await generateBreadcrumbs(crumbs, value);
+    setBreadcrumbs(crumbs);
   }
 
   const categoryList = categories.map(element => <SingleSelectOption value={element.categoryId}>{depthMap[element.depth]} {element.name}</SingleSelectOption>)
