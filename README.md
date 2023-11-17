@@ -1,8 +1,39 @@
 # Paths
 
-Paths consist of two content types:
-- Path category
-- Path
+## My initial thoughts
+
+My thought was to create a plugin that has two content types, a category and a path. Since I originally wanted to use it to expose a rest endpoint to get content by url on the front-end, the focus was on the paths table. The idea here was to let plugin users select what content types the plugin should be used on, and then subscribe to create and update events for these types. 
+
+In the paths table the plugin stores the path (I will come back to this later), the model uid, the entity id and the publish state. (It also stores the entity title, but I forgot why, so will probably remove it). This enables me to query the endpoint for a path for a specific frontend url. 
+
+In the paths service, the plugin returns the entity that corresponds to the path (fetched by the model uid and entity id).
+
+To create the paths for each entity, I just made it simple by creating a category that allows to create categories with a parent and children, along with a title and a slug. So when adding a category to an entity, the path should be generated from the category structure.
+
+This was the original idea. But then I needed breadcrumbs, and that is why I have started adding a function to generate a json structure that holds the breadcrumb along side the path, model uid and entity id.
+
+So an example of a path entity is:
+
+```
+{ 
+ "model_uid": "api::article.article", 
+ "entity_id": "38", 
+ "json_category": { 
+   "breadcrumbs": [ 
+     { 
+       "name": "Vårt ansvar", 
+       "slug": "berekraft" 
+     }, 
+     { 
+       "name": "Dyrevern", 
+       "slug": "berekraft/dyrevern" 
+     } 
+   ] 
+ } 
+}
+```
+
+So, this was the original idea.
 
 ## Path category
 
