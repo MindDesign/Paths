@@ -28,8 +28,12 @@ module.exports = ({ strapi }) => {
 
     async afterUpdate(event) {
       const { uid } = event.model;
-      const { id, path, publishedAt, title } = event.result;
-      const isPublished = publishedAt !== null
+      const { id, path, publishedAt, title, slug } = event.result;
+      const isPublished = publishedAt !== null;
+      const pathObject = JSON.parse(path);
+      const pathPath = pathObject.path + "/" + slug;
+      const pathBreadcrumbs = pathObject.breadcrumbs;
+
       let entry = await strapi.db.query('plugin::paths.path').update({
         where: { 
           $and: [
@@ -38,10 +42,11 @@ module.exports = ({ strapi }) => {
           ]
         },
         data: {
-          path: path,
+          path: pathPath,
           model_uid: uid,
           entity_id: id,
           entity_title: title,
+          json_category: pathBreadcrumbs,
           is_published: isPublished
         },
       });
@@ -49,14 +54,16 @@ module.exports = ({ strapi }) => {
       if (entry === null) {
         entry = await strapi.entityService.create('plugin::paths.path', {
           data: {
-            path: path,
+            path: pathPath,
             model_uid: uid,
             entity_id: id,
             entity_title: title,
+            json_category: pathBreadcrumbs,
             is_published: isPublished
           }
         });
       }
+      
     },
 
     async afterDelete(event) {

@@ -17,7 +17,8 @@ export default function Index({
   onChange,
   placeholder,
   required,
-  value
+  value,
+  attribute
 }) {
   const [data, setData] = useState();
   const [tree, setTree] = useState();
@@ -34,8 +35,13 @@ export default function Index({
   }, []);
 
   useEffect(() => {
-    //console.log(JSON.stringify(breadcrumbs, null, 2))
-  }, [breadcrumbs])
+    value = {
+      "path": path,
+      "breadcrumbs": breadcrumbs
+    }
+    console.log(JSON.stringify(value, null, 2))
+    //onChange({ target: name, value: value, type: attribute.type });
+  }, [breadcrumbs, path])
 
   const depthMap = {
     "5" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
@@ -136,70 +142,24 @@ export default function Index({
     const crumbs = [];
     await generateBreadcrumbs(crumbs, value);
     setBreadcrumbs(crumbs);
+    
+    const path = crumbs[crumbs.length - 1].slug;
+    setPath();
+
+    const obj = {
+      "path": path,
+      "breadcrumbs": crumbs
+    }
+    onChange({ target: { name, value: JSON.stringify(obj), type: attribute.type } })
   }
 
   const categoryList = categories.map(element => <SingleSelectOption value={element.categoryId}>{depthMap[element.depth]} {element.name}</SingleSelectOption>)
 
-  return (<SingleSelect label="Velg kategori" placeholder="Velg kategori..." onClear={() => {
-    setCategoryId(undefined);
-        }} value={value} onChange={selectCategory}>
-          {categoryList}
-        </SingleSelect>)
+  return (<SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={ name }
+    onChange={ selectCategory }
+    onClear={() => { setCategoryId(undefined) }} 
+    value={ value } 
+  >
+    {categoryList}
+  </SingleSelect>)
 }
-
-
-/**
-
-selectstructure:  [
-  {
-    "name": "Regntøy",
-    "slug": "regntoy",
-    "fullPath": "regntoy",
-    "categoryId": 2,
-    "depth": 0
-  },
-  {
-    "name": "Regnjakke",
-    "slug": "regnjakke",
-    "fullPath": "regntoy/regnjakke",
-    "categoryId": 3,
-    "depth": 1
-  },
-  {
-    "name": "Regnbukse",
-    "slug": "regnbukse",
-    "fullPath": "regntoy/regnbukse",
-    "categoryId": 4,
-    "depth": 1
-  },
-  {
-    "name": "Vaksen",
-    "slug": "vaksen",
-    "fullPath": "regntoy/regnbukse/vaksen",
-    "categoryId": 8,
-    "depth": 2
-  },
-  {
-    "name": "Regnsett",
-    "slug": "regnsett",
-    "fullPath": "regntoy/regnsett",
-    "categoryId": 5,
-    "depth": 1
-  },
-  {
-    "name": "Barn",
-    "slug": "barn",
-    "fullPath": "regntoy/regnsett/barn",
-    "categoryId": 6,
-    "depth": 2
-  },
-  {
-    "name": "Barn",
-    "slug": "barn",
-    "fullPath": "barn",
-    "categoryId": 7,
-    "depth": 0
-  }
-]
-
- */
