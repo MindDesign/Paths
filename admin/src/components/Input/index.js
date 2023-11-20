@@ -1,8 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useIntl } from 'react-intl';
-import { TextInput } from '@strapi/design-system/TextInput';
-import { Stack } from '@strapi/design-system/Stack';
-import { useFetchClient } from '@strapi/helper-plugin';
+import { useFetchClient, useCMEditViewDataManager } from '@strapi/helper-plugin';
 import {
   SingleSelect,
   SingleSelectOption
@@ -21,6 +19,7 @@ export default function Index({
   attribute
 }) {
   const [data, setData] = useState();
+  const { modifiedData } = useCMEditViewDataManager ();
   const [tree, setTree] = useState();
   const [categories, setCategories] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
@@ -35,13 +34,8 @@ export default function Index({
   }, []);
 
   useEffect(() => {
-    value = {
-      "path": path,
-      "breadcrumbs": breadcrumbs
-    }
-    console.log(JSON.stringify(value, null, 2))
-    //onChange({ target: name, value: value, type: attribute.type });
-  }, [breadcrumbs, path])
+    
+  }, [breadcrumbs, path, modifiedData])
 
   const depthMap = {
     "5" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
@@ -144,22 +138,30 @@ export default function Index({
     setBreadcrumbs(crumbs);
     
     const path = crumbs[crumbs.length - 1].slug;
-    setPath();
+    setPath(path);
 
     const obj = {
-      "path": path,
+      "path": path + "/" + modifiedData.slug,
       "breadcrumbs": crumbs
     }
     onChange({ target: { name, value: JSON.stringify(obj), type: attribute.type } })
   }
 
-  const categoryList = categories.map(element => <SingleSelectOption value={element.categoryId}>{depthMap[element.depth]} {element.name}</SingleSelectOption>)
+  const categoryList = categories.map(element => 
+    <SingleSelectOption value={element.categoryId}>
+      {depthMap[element.depth]} {element.name}
+    </SingleSelectOption>
+  );
 
-  return (<SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={ name }
-    onChange={ selectCategory }
-    onClear={() => { setCategoryId(undefined) }} 
-    value={ value } 
-  >
-    {categoryList}
-  </SingleSelect>)
+  return (
+  <>
+    <SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={ name }
+      onChange={ selectCategory }
+      onClear={() => { setCategoryId(undefined) }} 
+      value={ value }
+      >
+      {categoryList}
+    </SingleSelect>
+  </>
+  )
 }
