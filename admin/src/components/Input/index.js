@@ -27,16 +27,19 @@ export default function Index({
   const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [path, setPath] = useState(initialData.path);
   const [categoryId, setCategoryId] = useState();
+  const [displayPath, setDisplayPath] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const { formatMessage } = useIntl();
   const [err, setErr] = useState('');
   const { get } = useFetchClient();
 
   useEffect(() => {
+    init();
     getCategories()
   }, []);
 
   useEffect(() => {
-    
+    update();
   }, [breadcrumbs, path, modifiedData])
 
   const depthMap = {
@@ -45,6 +48,29 @@ export default function Index({
     "3" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
     "2" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
     "1" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+  }
+
+  function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+	}
+
+  const init = async () => {
+    if (initialData.path && isJson(initialData.path)) {
+      setDisplayPath(JSON.parse(initialData.path).path);
+      setSelectedCategoryId(JSON.parse(initialData.path).categoryId);
+    }
+  }
+
+  const update = async () => {
+    if (modifiedData.path && isJson(modifiedData.path)) {
+      setDisplayPath(JSON.parse(modifiedData.path).path);
+      setSelectedCategoryId(JSON.parse(modifiedData.path).categoryId);
+    }
   }
 
   // Lets create a tree of our categories
@@ -104,7 +130,7 @@ export default function Index({
   }
 
   // Get categories
-  const getCategories = async () => { console.log(initialData);
+  const getCategories = async () => {
     const { data } = await get('/paths/pathscategories');
     setData(data);
     const root = await buildTreeStructure(data);
@@ -161,11 +187,11 @@ export default function Index({
     <SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={ name }
       onChange={ selectCategory }
       onClear={() => { setCategoryId(undefined) }} 
-      value={ JSON.parse(path).categoryId }
+      value={ selectedCategoryId }
       >
       {categoryList}
     </SingleSelect>
-    <Typography>{ JSON.parse(path).path }</Typography>
+    <Typography>{ displayPath }</Typography>
   </>
   )
 }
