@@ -28,10 +28,10 @@ module.exports = ({ strapi }) => {
 
     async afterUpdate(event) {
       const { uid } = event.model;
-      const { id, path, publishedAt, title, slug } = event.result;
+      const { id, path, publishedAt, title } = event.result;
       const isPublished = publishedAt !== null;
       const pathObject = JSON.parse(path);
-      const pathPath = pathObject.path + "/" + slug;
+      const pathPath = pathObject.path;
       const pathBreadcrumbs = pathObject.breadcrumbs;
 
       let entry = await strapi.db.query('plugin::paths.path').update({

@@ -3,7 +3,8 @@ import { useIntl } from 'react-intl';
 import { useFetchClient, useCMEditViewDataManager } from '@strapi/helper-plugin';
 import {
   SingleSelect,
-  SingleSelectOption
+  SingleSelectOption,
+  Typography
 } from '@strapi/design-system';
 
 export default function Index({
@@ -18,12 +19,13 @@ export default function Index({
   value,
   attribute
 }) {
+  const { modifiedData, initialData } = useCMEditViewDataManager ();
+
   const [data, setData] = useState();
-  const { modifiedData } = useCMEditViewDataManager ();
   const [tree, setTree] = useState();
   const [categories, setCategories] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([]);
-  const [path, setPath] = useState();
+  const [path, setPath] = useState(initialData.path);
   const [categoryId, setCategoryId] = useState();
   const { formatMessage } = useIntl();
   const [err, setErr] = useState('');
@@ -102,7 +104,7 @@ export default function Index({
   }
 
   // Get categories
-  const getCategories = async () => {
+  const getCategories = async () => { console.log(initialData);
     const { data } = await get('/paths/pathscategories');
     setData(data);
     const root = await buildTreeStructure(data);
@@ -113,19 +115,19 @@ export default function Index({
 
   // Generate breadcrumbs (selected category and all its parents)
   const generateBreadcrumbs = async (crumbs, categoryId) => {
-    let selectedCategory = data.filter((el) => el.id == categoryId)[0];
+    let currentCategory = data.filter((el) => el.id == categoryId)[0];
     crumbs.push({
-      "name": selectedCategory.name,
-      "slug": selectedCategory.fullPath
+      "name": currentCategory.name,
+      "slug": currentCategory.fullPath
     });
 
-    while (selectedCategory.parent !== null) {
-      let curEl = data.filter((el) => { return el.id === selectedCategory.parent.id });
+    while (currentCategory.parent !== null) {
+      let curEl = data.filter((el) => { return el.id === currentCategory.parent.id });
       crumbs.push({
         "name": curEl[0].name,
         "slug": curEl[0].fullPath
       });
-      selectedCategory = curEl[0];
+      currentCategory = curEl[0];
     }
 
     crumbs.reverse();
@@ -138,17 +140,18 @@ export default function Index({
     setBreadcrumbs(crumbs);
     
     const path = crumbs[crumbs.length - 1].slug;
-    setPath(path);
-
+    
     const obj = {
+      "categoryId": value,
       "path": path + "/" + modifiedData.slug,
       "breadcrumbs": crumbs
     }
+    setPath(JSON.stringify(obj));
     onChange({ target: { name, value: JSON.stringify(obj), type: attribute.type } })
   }
 
   const categoryList = categories.map(element => 
-    <SingleSelectOption value={element.categoryId}>
+    <SingleSelectOption value={element.categoryId} selected={element.categoryId===value}>
       {depthMap[element.depth]} {element.name}
     </SingleSelectOption>
   );
@@ -158,10 +161,11 @@ export default function Index({
     <SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={ name }
       onChange={ selectCategory }
       onClear={() => { setCategoryId(undefined) }} 
-      value={ value }
+      value={ JSON.parse(path).categoryId }
       >
       {categoryList}
     </SingleSelect>
+    <Typography>{ JSON.parse(path).path }</Typography>
   </>
   )
 }
