@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-paths",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A way to fetch Strapi content, and create breadcrumbs based on front end urls.",
   "strapi": {
     "name": "paths",
