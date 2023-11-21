@@ -19,7 +19,7 @@ export default function Index({
   value,
   attribute
 }) {
-  const { modifiedData, initialData } = useCMEditViewDataManager ();
+  const { modifiedData, initialData, slug } = useCMEditViewDataManager ();
 
   const [data, setData] = useState();
   const [tree, setTree] = useState();
@@ -28,10 +28,19 @@ export default function Index({
   const [path, setPath] = useState(initialData.path);
   const [categoryId, setCategoryId] = useState();
   const [displayPath, setDisplayPath] = useState("");
+  const [slugName, setSlugName] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const { formatMessage } = useIntl();
   const [err, setErr] = useState('');
   const { get } = useFetchClient();
+  
+  // TODO: Make a setting for this
+  const modelTypeSlugNames = [
+    { modelName: 'api::article.article', slugName: 'slug' },
+    { modelName: 'api::page.page', slugName: 'slug'},
+    { modelName: 'api::paths.pathscategory', slugName: 'slug'},
+    { modelName: 'plugin::shopify-connect.shopify-product', slugName: 'handle'},
+  ];
 
   useEffect(() => {
     init();
@@ -60,6 +69,11 @@ export default function Index({
 	}
 
   const init = async () => {
+    console.log(modelTypeSlugNames);
+    const modelType = modelTypeSlugNames.find(o=>o.modelName === slug)
+    console.log(modelType);
+    setSlugName(modelType.slugName);
+    
     if (initialData.path && isJson(initialData.path)) {
       setDisplayPath(JSON.parse(initialData.path).path);
       setSelectedCategoryId(JSON.parse(initialData.path).categoryId);
@@ -67,6 +81,7 @@ export default function Index({
   }
 
   const update = async () => {
+    console.log(slugName);
     if (modifiedData.path && isJson(modifiedData.path)) {
       setDisplayPath(JSON.parse(modifiedData.path).path);
       setSelectedCategoryId(JSON.parse(modifiedData.path).categoryId);
@@ -169,7 +184,7 @@ export default function Index({
     
     const obj = {
       "categoryId": value,
-      "path": path + "/" + modifiedData.slug,
+      "path": path + "/" + modifiedData[slugName],
       "breadcrumbs": crumbs
     }
     setPath(JSON.stringify(obj));
