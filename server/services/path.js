@@ -5,9 +5,18 @@
  */
 
 module.exports = {
+  async getPaths({ page, pageSize }) {
+    return await strapi.entityService.findMany('plugin::paths.path', {
+      start: page,
+      limit: pageSize,
+    });
+  },
+
+  async getPathsCount() {
+    return await strapi.entityService.count('plugin::paths.path');
+  },
 
   async getIndex({ path, populate }) {
-    console.log("Path: ", path);
     const pathEntity = await strapi.db.query('plugin::paths.path').findOne({
       select: ['model_uid', 'entity_id'],
       where: {
@@ -17,13 +26,10 @@ module.exports = {
         ]
       }
     });
-    console.log("No pathEntity: ", pathEntity);
     if (pathEntity) {
-      console.log("Here we are: pathEntity exists");
       const entity = await strapi.entityService.findOne(pathEntity.model_uid, pathEntity.entity_id, {
-        populate: (populate) ? populate: ''
+        populate: (populate) ? populate : ''
       });
-      console.log("Here we are: entity loaded: ", entity);
       return entity;
     }
 
