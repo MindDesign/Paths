@@ -8,6 +8,13 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('plugin::paths.path', {
 
+  async getPath(ctx) {
+    ctx.body = await strapi
+      .plugin('paths')
+      .service('pathService')
+      .getPath(ctx.params.id);
+  },
+
   async getPaths(ctx) {
     ctx.body = await strapi
       .plugin('paths')

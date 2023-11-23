@@ -38,7 +38,7 @@ import {
   Trash
 } from '@strapi/icons';
 
-const HomePage = () => {
+const CategoriesPage = () => {
 
   const ROW_COUNT = 6;
   const COL_COUNT = 10;
@@ -124,4 +124,4 @@ const HomePage = () => {
   </Layout>
 };
 
-export default HomePage;
+export default CategoriesPage;

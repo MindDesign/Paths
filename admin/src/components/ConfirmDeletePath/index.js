@@ -12,7 +12,6 @@ import { ExclamationMarkCircle, Trash } from '@strapi/icons';
 export default function ConfirmDeletePath(show) {
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect() 
 
   return <>
     <Button onClick={() => setIsVisible(true)}>Click me</Button>

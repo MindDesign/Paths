@@ -5,6 +5,10 @@
  */
 
 module.exports = {
+  async getPath(id) {
+    return await strapi.entityService.findOne('plugin::paths.path', id);
+  },
+
   async getPaths({ page, pageSize }) {
     return await strapi.entityService.findMany('plugin::paths.path', {
       start: page,

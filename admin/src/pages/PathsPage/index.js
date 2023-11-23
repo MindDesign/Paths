@@ -45,7 +45,7 @@ import {
   Trash
 } from '@strapi/icons';
 
-const HomePage = () => {
+const PathsPage = () => {
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const { get } = useFetchClient();
@@ -65,6 +65,10 @@ const HomePage = () => {
   const fetchCategories = async () => {
     const { data } = await get(`/paths/paths?page=${start}&pageSize=${pageSize}`);
     setData(data);
+  }
+
+  const goto = (id) => {
+    window.location.href = id;
   }
 
   useEffect(() => {
@@ -102,7 +106,7 @@ const HomePage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data.map(entry => <Tr key={entry.id}>
+            {data.map(entry => <Tr onClick={() => goto(entry.id)} key={entry.id}>
               <Td>
                 <BaseCheckbox aria-label={`Select ${entry.contact}`} />
               </Td>
@@ -154,4 +158,4 @@ const HomePage = () => {
 
 };
 
-export default HomePage;
+export default PathsPage;

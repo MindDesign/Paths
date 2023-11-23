@@ -12,6 +12,7 @@ import pluginId from '../../pluginId';
 import HomePage from '../HomePage';
 import CategoriesPage from '../CategoriesPage';
 import PathsPage from '../PathsPage';
+import EditPathPage from '../EditPathPage';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path={`/plugins/${pluginId}`} component={HomePage} exact />
         <Route path={`/plugins/${pluginId}/categories`} component={CategoriesPage} exact />
         <Route path={`/plugins/${pluginId}/paths`} component={PathsPage} exact />
+        <Route path={`/plugins/${pluginId}/paths/:id`} component={EditPathPage} exact />
         <Route component={AnErrorOccurred} />
       </Switch>
     </div>
