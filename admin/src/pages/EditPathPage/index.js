@@ -70,22 +70,32 @@ const EditPathPage = ({ match }) => {
       </Link>} primaryAction={<Button disabled>Save</Button>} title="Edit Path" as="h2" />
       <Box padding={8} background="neutral100">
 
-        <TwoColsLayout startCol={<Box padding={4}>
+        <TwoColsLayout 
+          background="neutral100" 
+          startCol={<Box background="neutral100">
+              <Typography>{JSON.stringify(data, null, 2)}</Typography>
+            </Box>} 
+          endCol={<Box background="neutral100">
+              <GridLayout direction="column" background="neutral100" padding={0}>
+                <Flex
+                  alignItems="flex-start"
+                  background="neutral100"
+                  borderColor="primary200"
+                  boxShadow="filterShadow"
+                  gap={3}
+                  hasRadius
+                  padding={5}
+                  paddingRight={6}
+                >
+                  <Typography>Editing published version</Typography>
+                </Flex>
 
-          <Typography>{JSON.stringify(data, null, 2)}</Typography>
+                <Button fullWidth variant="danger">Delete path</Button>
 
-        </Box>} endCol={<GridLayout direction="column" padding={0}>
-
-          <Box padding={4} background="Success100" border="Success600">
-            <Typography>Editing published version</Typography>
-          </Box>
-
-          <Button fullWidth variant="danger">Delete path</Button>
-
-        </GridLayout>} />
-
+              </GridLayout>
+            </Box>}
+        />
       </Box>
-
     </>
   </Layout>
 
