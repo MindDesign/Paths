@@ -11,6 +11,7 @@ import pluginId from '../../pluginId';
 import getTrad from '../../utils/getTrad';
 import Sidebar from '../../components/Sidebar';
 import ConfirmDeletePath from '../../components/ConfirmDeletePath';
+import { useHistory } from "react-router-dom";
 import {
   Box,
   Table,
@@ -46,6 +47,7 @@ import {
 } from '@strapi/icons';
 
 const PathsPage = () => {
+  const history = useHistory();
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const { get } = useFetchClient();
@@ -68,7 +70,7 @@ const PathsPage = () => {
   }
 
   const goto = (id) => {
-    window.location.href = id;
+    window.location.href = `paths/${id}`;
   }
 
   useEffect(() => {
@@ -106,7 +108,7 @@ const PathsPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data.map(entry => <Tr onClick={() => goto(entry.id)} key={entry.id}>
+            {data.map(entry => <Tr onClick={() => history.push(`paths/${entry.id}`)} key={entry.id}>
               <Td>
                 <BaseCheckbox aria-label={`Select ${entry.contact}`} />
               </Td>

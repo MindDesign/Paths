@@ -10,7 +10,7 @@ module.exports = {
     }
   }, {
     method: 'GET',
-    path: '/path',
+    path: '/paths/:id',
     handler: 'pathsController.getPath',
     config: {
       policies: []

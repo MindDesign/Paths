@@ -34,8 +34,13 @@ import {
   NextLink,
   PageLink,
   Pagination,
-  PreviousLink
+  PreviousLink,
+  TwoColsLayout,
+  GridLayout,
+  Alert
 } from '@strapi/design-system';
+
+import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem } from '@strapi/design-system/v2';
 
 import {
   Plus,
@@ -45,16 +50,13 @@ import {
   Trash
 } from '@strapi/icons';
 
-const EditPathPage = ({match}) => {
+const EditPathPage = ({ match }) => {
   const [data, setData] = useState();
-  const [count, setCount] = useState(0);
   const { get } = useFetchClient();
 
   const fetchCategories = async () => {
-    console.log("Here");
-    //const data = await get(`/paths/path/${match.params.id}`);
-    //console.log(data);
-    //setData(data);
+    const { data } = await get(`/paths/paths/${match.params.id}`);
+    setData(data);
   }
 
   useEffect(() => {
@@ -65,10 +67,22 @@ const EditPathPage = ({match}) => {
     <>
       <BaseHeaderLayout navigationAction={<Link startIcon={<ArrowLeft />} to={`/plugins/${pluginId}/paths?start=1&pageSize=10`}>
         Go back
-      </Link>} title="Edit Path" as="h2" />
+      </Link>} primaryAction={<Button disabled>Save</Button>} title="Edit Path" as="h2" />
       <Box padding={8} background="neutral100">
-        
-        Edit path
+
+        <TwoColsLayout startCol={<Box padding={4}>
+
+          <Typography>{JSON.stringify(data, null, 2)}</Typography>
+
+        </Box>} endCol={<GridLayout direction="column" padding={0}>
+
+          <Box padding={4} background="Success100" border="Success600">
+            <Typography>Editing published version</Typography>
+          </Box>
+
+          <Button fullWidth variant="danger">Delete path</Button>
+
+        </GridLayout>} />
 
       </Box>
 
