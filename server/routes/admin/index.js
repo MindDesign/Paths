@@ -7,20 +7,27 @@ module.exports = {
     config: {
       policies: [],
       auth: false
-    },
+    }
   }, {
     method: 'GET',
     path: '/paths',
     handler: 'pathsController.getPaths',
     config: {
       policies: []
-    },
+    }
   }, {
     method: 'GET',
     path: '/pathscount',
     handler: 'pathsController.getPathsCount',
     config: {
       policies: []
-    },
+    }
+  }, {
+    method: 'DELETE',
+    path: '/paths/:id',
+    handler: 'pathsController.deletePath',
+    config: {
+      policies: []
+    }
   }],
 };

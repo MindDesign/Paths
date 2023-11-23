@@ -32,6 +32,10 @@ module.exports = {
       });
       return entity;
     }
-
   },
+
+  // Todo: Delete path data on entity as well
+  async deletePath(id) {
+    return await strapi.entityService.delete('plugin::paths.path', id);
+  }
 };

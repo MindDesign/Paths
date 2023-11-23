@@ -29,4 +29,11 @@ module.exports = createCoreController('plugin::paths.path', {
       .getIndex(ctx.request.query);
   },
 
+  async deletePath(ctx) {
+    ctx.body = await strapi
+      .plugin('paths')
+      .service('pathService')
+      .deletePath(ctx.params.id);
+  }
+
 });

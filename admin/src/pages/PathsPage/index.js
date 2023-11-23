@@ -10,6 +10,7 @@ import { useFetchClient } from '@strapi/helper-plugin';
 import pluginId from '../../pluginId';
 import getTrad from '../../utils/getTrad';
 import Sidebar from '../../components/Sidebar';
+import ConfirmDeletePath from '../../components/ConfirmDeletePath';
 import {
   Box,
   Table,
@@ -146,8 +147,11 @@ const HomePage = () => {
           <NextLink to="/3">Go to next page</NextLink>
         </Pagination>
       </Box>
+
+      <ConfirmDeletePath />
     </>
   </Layout>
+
 };
 
 export default HomePage;
