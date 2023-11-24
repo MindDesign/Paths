@@ -9,17 +9,19 @@ import pluginId from '../../pluginId';
 import { Dialog, DialogBody, DialogFooter, Button, Flex, Typography } from '@strapi/design-system';
 import { ExclamationMarkCircle, Trash } from '@strapi/icons';
 
-export default function ConfirmDeletePath(show) {
+export default function ConfirmDeletePath({show, id}) {
   const [isVisible, setIsVisible] = useState(false);
 
+  useEffect(() => {
+    setIsVisible(show);
+  }, [show])
 
   return <>
-    <Button onClick={() => setIsVisible(true)}>Click me</Button>
     <Dialog onClose={() => setIsVisible(false)} title="Confirmation" isOpen={isVisible}>
       <DialogBody icon={<ExclamationMarkCircle />}>
         <Flex direction="column" alignItems="center" gap={2}>
           <Flex justifyContent="center">
-            <Typography id="confirm-description">Are you sure you want to delete this?</Typography>
+            <Typography id="confirm-description">Are you sure you want to delete this {id}?</Typography>
           </Flex>
         </Flex>
       </DialogBody>

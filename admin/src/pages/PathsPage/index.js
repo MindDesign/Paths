@@ -50,6 +50,8 @@ const PathsPage = () => {
   const history = useHistory();
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
+  const [openConfirmDeletePath, setOpenConfirmDeletePath] = useState(false);
+  const [deletePathId, setDeletePathId] = useState();
   const { get } = useFetchClient();
   const ROW_COUNT = 5;
   const COL_COUNT = 10;
@@ -73,10 +75,16 @@ const PathsPage = () => {
     window.location.href = `paths/${id}`;
   }
 
+  const confirmDelete = (id) => {
+    console.log("here");
+    setOpenConfirmDeletePath(true);
+    setDeletePathId(id);
+  }
+
   useEffect(() => {
     fetchCount();
     fetchCategories();
-  }, [currentPage]);
+  }, [currentPage, openConfirmDeletePath]);
 
   return <Layout sideNav={<Sidebar />}>
     <>
@@ -108,27 +116,27 @@ const PathsPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data.map(entry => <Tr onClick={() => history.push(`paths/${entry.id}`)} key={entry.id}>
+            {data.map(entry => <Tr key={entry.id}>
               <Td>
                 <BaseCheckbox aria-label={`Select ${entry.contact}`} />
               </Td>
-              <Td>
+              <Td onClick={() => history.push(`paths/${entry.id}`)}>
                 <Typography textColor="neutral800">{entry.id}</Typography>
               </Td>
-              <Td>
+              <Td onClick={() => history.push(`paths/${entry.id}`)}>
                 <Typography textColor="neutral800">{entry.entity_title}</Typography>
               </Td>
-              <Td>
+              <Td onClick={() => history.push(`paths/${entry.id}`)}>
                 <Typography textColor="neutral800">{entry.path}</Typography>
               </Td>
-              <Td>
+              <Td onClick={() => history.push(`paths/${entry.id}`)}>
                 <Typography textColor="neutral800">{entry.model_uid}</Typography>
               </Td>
               <Td>
                 <Flex>
-                  <IconButton onClick={() => console.log('edit')} label="Edit" noBorder icon={<Pencil />} />
+                  <IconButton onClick={() => history.push(`paths/${entry.id}`)} label="Edit" noBorder icon={<Pencil />} />
                   <Box paddingLeft={1}>
-                    <IconButton onClick={() => console.log('delete')} label="Delete" noBorder icon={<Trash />} />
+                    <IconButton onClick={() => confirmDelete(entry.id)} label="Delete" noBorder icon={<Trash />} />
                   </Box>
                 </Flex>
               </Td>
@@ -153,8 +161,7 @@ const PathsPage = () => {
           <NextLink to="/3">Go to next page</NextLink>
         </Pagination>
       </Box>
-
-      <ConfirmDeletePath />
+      <ConfirmDeletePath show={openConfirmDeletePath} id={deletePathId} />
     </>
   </Layout>
 
