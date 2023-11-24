@@ -77,8 +77,12 @@ const PathsPage = () => {
 
   const confirmDelete = (id) => {
     console.log("here");
-    setOpenConfirmDeletePath(true);
+    toggleOpenConfirmDeletePath(openConfirmDeletePath)
     setDeletePathId(id);
+  }
+
+  const toggleOpenConfirmDeletePath = (show) => {
+    setOpenConfirmDeletePath(!show);
   }
 
   useEffect(() => {
@@ -161,7 +165,7 @@ const PathsPage = () => {
           <NextLink to="/3">Go to next page</NextLink>
         </Pagination>
       </Box>
-      <ConfirmDeletePath show={openConfirmDeletePath} id={deletePathId} />
+      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} id={deletePathId} />
     </>
   </Layout>
 
