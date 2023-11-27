@@ -39,7 +39,8 @@ import {
   TwoColsLayout,
   GridLayout,
   Alert,
-  TextInput
+  TextInput,
+  Information
 } from '@strapi/design-system';
 
 import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem } from '@strapi/design-system/v2';
@@ -68,11 +69,11 @@ const EditPathPage = ({ match }) => {
     const { data } = await get(`/paths/paths/${match.params.id}`);
     setData(data);
     setPath(data.path);
-    setModeluid(data.modeluid);
-    setEntryid(data.entryid);
-    setIspublished(data.ispublished);
-    setEntitytitle(data.entitytitle);
-    setJsoncategory(data.jsoncategory);
+    setModeluid(data.model_uid);
+    setEntryid(data.entry_id);
+    setIspublished(data.is_published);
+    setEntitytitle(data.entity_title);
+    setJsoncategory(data.json_category);
   }
 
   const confirmDelete = (id) => {
@@ -83,6 +84,10 @@ const EditPathPage = ({ match }) => {
 
   const toggleOpenConfirmDeletePath = (show) => {
     setOpenConfirmDeletePath(!show);
+  }
+
+  const getPathError = () => {
+    return "";
   }
 
   useEffect(() => {
@@ -100,7 +105,8 @@ const EditPathPage = ({ match }) => {
           background="neutral100" 
           shadow="none"
           startCol={<Box background="neutral100" padding={8}>
-              
+              <TextInput placeholder="Path" label="Path" name="path" hint="Max 140 characters" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
+              <TextInput disabled placeholder="Model UID" label="Model UID" name="modeluid" hint="" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={modeluid} />
               <Typography>{JSON.stringify(data, null, 2)}</Typography>
             </Box>} 
           endCol={<Box background="neutral100" shadow="none">
@@ -115,7 +121,11 @@ const EditPathPage = ({ match }) => {
                   padding={5}
                   paddingRight={6}
                 >
-                  <Typography>Editing published version</Typography>
+                  <Typography>
+                    {(ispublished) 
+                    ? 'Editing path for published entity'
+                    : 'Editing path for unpublished entity'}
+                  </Typography>
                 </Flex>
 
                 <Button onClick={() => confirmDelete(path.id)} fullWidth variant="danger">Delete path</Button>
