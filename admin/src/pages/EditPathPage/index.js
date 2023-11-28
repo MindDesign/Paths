@@ -43,7 +43,8 @@ import {
   Information,
   Checkbox,
   Textarea,
-  Tooltip
+  Tooltip,
+  JSONInput
 } from '@strapi/design-system';
 
 import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem } from '@strapi/design-system/v2';
@@ -58,14 +59,14 @@ import {
 
 const EditPathPage = ({ match }) => {
   const [rawdata, setRawdata] = useState();
-  const [path, setPath] = useState();
-  const [modeluid, setModeluid] = useState();
-  const [entryid, setEntryid] = useState();
-  const [ispublished, setIspublished] = useState();
-  const [entitytitle, setEntitytitle] = useState();
-  const [jsoncategory, setJsoncategory] = useState();
+  const [path, setPath] = useState("");
+  const [modeluid, setModeluid] = useState("");
+  const [entryid, setEntryid] = useState(0);
+  const [ispublished, setIspublished] = useState(false);
+  const [entitytitle, setEntitytitle] = useState("");
+  const [jsoncategory, setJsoncategory] = useState({});
   const [openConfirmDeletePath, setOpenConfirmDeletePath] = useState(false);
-  const [deletePathId, setDeletePathId] = useState();
+  const [deletePathId, setDeletePathId] = useState(0);
   const { get } = useFetchClient();
 
   const fetchCategories = async () => {
@@ -77,6 +78,7 @@ const EditPathPage = ({ match }) => {
     setIspublished(data.is_published);
     setEntitytitle(data.entity_title);
     setJsoncategory(data.json_category);
+    setDeletePathId(data.id);
   }
 
   const confirmDelete = (id) => {
@@ -93,6 +95,10 @@ const EditPathPage = ({ match }) => {
     return "";
   }
 
+  const getEntityTitleError = () => {
+    return "";
+  }
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -104,47 +110,57 @@ const EditPathPage = ({ match }) => {
       </Link>} primaryAction={<Button disabled>Save</Button>} title="Edit Path" as="h2" />
       <Box padding={8} background="neutral100" shadow="none">
 
-        <TwoColsLayout 
-          background="neutral100" 
+        <TwoColsLayout
+          background="neutral100"
           shadow="none"
           startCol={<Box background="neutral100" padding={8}>
+            <Box marginBottom={4}>
+              <TextInput placeholder="Entity title" label="Entity title" name="entitytitle" hint="Max 140 characters" error={getEntityTitleError()} onChange={(e) => setPath(e.target.value)} value={entitytitle} />
+            </Box>
+            <Box marginBottom={4}>
               <TextInput placeholder="Path" label="Path" name="path" hint="Max 140 characters" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
-              <Textarea placeholder="Breadcrumbs" label="Breadcrumbs" name="jsoncategory" hint="Description line" onChange={e => setContent(e.target.value)}>{JSON.stringify(jsoncategory, null, 2)}</Textarea>
+            </Box>
+            <Box marginBottom={4}>
+              <JSONInput disabled label="JSON breadcrumbs" value={JSON.stringify(jsoncategory, null, 2)} />
+            </Box>
+            <Box marginBottom={4}>
               <TextInput disabled placeholder="Model UID" label="Model UID" name="modeluid" hint="" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={modeluid} />
+            </Box>
+            <Box marginBottom={4}>
               <>
                 <Checkbox
                   value={ispublished}
                   key={rawdata?.id}
                   disabled={true}
                 >
-                  <Typography>Is published?</Typography>
+                  <Typography>Is entity path belongs to ublished?</Typography>
                 </Checkbox>
               </>
-              <Typography>{JSON.stringify(rawdata, null, 2)}</Typography>
-            </Box>} 
+            </Box>
+          </Box>}
           endCol={<Box background="neutral100" shadow="none">
-              <GridLayout direction="column" background="neutral100" shadow="none" padding={0}>
-                <Flex
-                  alignItems="flex-start"
-                  background="neutral100"
-                  borderColor="primary200"
-                  boxShadow="none"
-                  gap={3}
-                  hasRadius
-                  padding={5}
-                  paddingRight={6}
-                >
-                  <Typography>
-                    {(ispublished) 
+            <GridLayout direction="column" background="neutral100" shadow="none" padding={0}>
+              <Flex
+                alignItems="flex-start"
+                background="neutral100"
+                borderColor="primary200"
+                boxShadow="none"
+                gap={3}
+                hasRadius
+                padding={5}
+                paddingRight={6}
+              >
+                <Typography>
+                  {(ispublished)
                     ? 'Editing path for published entity'
                     : 'Editing path for unpublished entity'}
-                  </Typography>
-                </Flex>
+                </Typography>
+              </Flex>
 
-                <Button onClick={() => confirmDelete(path.id)} fullWidth variant="danger">Delete path</Button>
+              <Button onClick={() => confirmDelete(path.id)} fullWidth variant="danger">Delete path</Button>
 
-              </GridLayout>
-            </Box>}
+            </GridLayout>
+          </Box>}
         />
       </Box>
       <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} id={deletePathId} />
