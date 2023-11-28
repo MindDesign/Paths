@@ -10,6 +10,13 @@ module.exports = {
     }
   }, {
     method: 'GET',
+    path: '/categoriescount',
+    handler: 'pathsCategoryController.getCategoriesCount',
+    config: {
+      policies: []
+    }
+  }, {
+    method: 'GET',
     path: '/paths/:id',
     handler: 'pathsController.getPath',
     config: {
