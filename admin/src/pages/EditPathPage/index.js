@@ -61,7 +61,7 @@ const EditPathPage = ({ match }) => {
   const [rawdata, setRawdata] = useState();
   const [path, setPath] = useState("");
   const [modeluid, setModeluid] = useState("");
-  const [entryid, setEntryid] = useState(0);
+  const [entityid, setEntityid] = useState(0);
   const [ispublished, setIspublished] = useState(false);
   const [entitytitle, setEntitytitle] = useState("");
   const [jsoncategory, setJsoncategory] = useState({});
@@ -74,11 +74,12 @@ const EditPathPage = ({ match }) => {
     setRawdata(data);
     setPath(data.path);
     setModeluid(data.model_uid);
-    setEntryid(data.entry_id);
+    setEntityid(data.entity_id);
     setIspublished(data.is_published);
     setEntitytitle(data.entity_title);
     setJsoncategory(data.json_category);
     setDeletePathId(data.id);
+    console.log(data);
   }
 
   const confirmDelete = (id) => {
@@ -152,12 +153,12 @@ const EditPathPage = ({ match }) => {
               >
                 <Typography>
                   {(ispublished)
-                    ? 'Editing path for published entity'
-                    : 'Editing path for unpublished entity'}
+                    ? `Editing path for published entity (${entityid})`
+                    : `Editing path for unpublished entity (${entityid})`}
                 </Typography>
               </Flex>
 
-              <Button onClick={() => confirmDelete(path.id)} fullWidth variant="danger">Delete path</Button>
+              <Button onClick={() => confirmDelete(rawdata.id)} fullWidth variant="danger">Delete path</Button>
 
             </GridLayout>
           </Box>}

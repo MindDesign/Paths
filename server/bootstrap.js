@@ -12,7 +12,7 @@ module.exports = ({ strapi }) => {
 
     async afterCreate(event) {
       const { uid } = event.model;
-      const { id, path, publishedAt, title } = event.result;
+      const { id, path, publishedAt, title, categoryId } = event.result;
       const isPublished = publishedAt !== null
       const entry = await strapi.entityService.create('plugin::paths.path', {
         data: {
@@ -20,6 +20,7 @@ module.exports = ({ strapi }) => {
           model_uid: uid,
           entity_id: id,
           entity_title: title,
+          category: { connect: categoryId },
           is_published: isPublished
         }
       });
@@ -28,14 +29,14 @@ module.exports = ({ strapi }) => {
 
     async afterUpdate(event) {
       const { uid } = event.model;
-      const { id, path, publishedAt, title } = event.result;
+      const { id, path, publishedAt, title, categoryId } = event.result;
       const isPublished = publishedAt !== null;
       const pathObject = JSON.parse(path);
       const pathPath = pathObject.path;
       const pathBreadcrumbs = pathObject.breadcrumbs;
 
       let entry = await strapi.db.query('plugin::paths.path').update({
-        where: { 
+        where: {
           $and: [
             { model_uid: uid },
             { entity_id: id }
@@ -47,6 +48,7 @@ module.exports = ({ strapi }) => {
           entity_id: id,
           entity_title: title,
           json_category: pathBreadcrumbs,
+          category: { connect: categoryId },
           is_published: isPublished
         },
       });
@@ -59,18 +61,19 @@ module.exports = ({ strapi }) => {
             entity_id: id,
             entity_title: title,
             json_category: pathBreadcrumbs,
+            category: { connect: categoryId },
             is_published: isPublished
           }
         });
       }
-      
+
     },
 
     async afterDelete(event) {
       const { uid } = event.model;
       const { id } = event.result;
       const entry = await strapi.db.query('plugin::paths.path').delete({
-        where: { 
+        where: {
           $and: [
             { model_uid: uid },
             { entity_id: id }

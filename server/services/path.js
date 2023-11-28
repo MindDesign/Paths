@@ -6,7 +6,9 @@
 
 module.exports = {
   async getPath(id) {
-    return await strapi.entityService.findOne('plugin::paths.path', id);
+    return await strapi.entityService.findOne('plugin::paths.path', id, {
+      populate: { category: true },
+    });
   },
 
   async getPaths({ page, pageSize }) {
