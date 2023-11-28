@@ -40,7 +40,10 @@ import {
   GridLayout,
   Alert,
   TextInput,
-  Information
+  Information,
+  Checkbox,
+  Textarea,
+  Tooltip
 } from '@strapi/design-system';
 
 import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem } from '@strapi/design-system/v2';
@@ -54,7 +57,7 @@ import {
 } from '@strapi/icons';
 
 const EditPathPage = ({ match }) => {
-  const [data, setData] = useState();
+  const [rawdata, setRawdata] = useState();
   const [path, setPath] = useState();
   const [modeluid, setModeluid] = useState();
   const [entryid, setEntryid] = useState();
@@ -67,7 +70,7 @@ const EditPathPage = ({ match }) => {
 
   const fetchCategories = async () => {
     const { data } = await get(`/paths/paths/${match.params.id}`);
-    setData(data);
+    setRawdata(data);
     setPath(data.path);
     setModeluid(data.model_uid);
     setEntryid(data.entry_id);
@@ -106,8 +109,18 @@ const EditPathPage = ({ match }) => {
           shadow="none"
           startCol={<Box background="neutral100" padding={8}>
               <TextInput placeholder="Path" label="Path" name="path" hint="Max 140 characters" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
+              <Textarea placeholder="Breadcrumbs" label="Breadcrumbs" name="jsoncategory" hint="Description line" onChange={e => setContent(e.target.value)}>{JSON.stringify(jsoncategory, null, 2)}</Textarea>
               <TextInput disabled placeholder="Model UID" label="Model UID" name="modeluid" hint="" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={modeluid} />
-              <Typography>{JSON.stringify(data, null, 2)}</Typography>
+              <>
+                <Checkbox
+                  value={ispublished}
+                  key={rawdata?.id}
+                  disabled={true}
+                >
+                  <Typography>Is published?</Typography>
+                </Checkbox>
+              </>
+              <Typography>{JSON.stringify(rawdata, null, 2)}</Typography>
             </Box>} 
           endCol={<Box background="neutral100" shadow="none">
               <GridLayout direction="column" background="neutral100" shadow="none" padding={0}>
