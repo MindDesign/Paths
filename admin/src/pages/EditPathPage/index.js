@@ -30,7 +30,6 @@ import {
   Flex,
   Layout,
   BaseHeaderLayout,
-  Link,
   Button,
   Dots,
   NextLink,
@@ -48,7 +47,7 @@ import {
   JSONInput
 } from '@strapi/design-system';
 
-import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem } from '@strapi/design-system/v2';
+import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem, Link } from '@strapi/design-system/v2';
 
 import {
   Plus,
@@ -70,7 +69,7 @@ const EditPathPage = ({ match }) => {
   const [jsoncategory, setJsoncategory] = useState({});
   const [openConfirmDeletePath, setOpenConfirmDeletePath] = useState(false);
   const [deletePathId, setDeletePathId] = useState(0);
-  const { get } = useFetchClient();
+  const { get, del } = useFetchClient();
   const history = useHistory();
 
   const fetchPath = async () => {
@@ -95,9 +94,12 @@ const EditPathPage = ({ match }) => {
     setOpenConfirmDeletePath(!show);
   }
 
-  const goToEntity = () => {
-    const url = `/content-manager/collectionType/${modeluid}/${entityid}`;
-    history.push(url);
+  const deletePath = async () => {
+    const result = await del(`/paths/paths/${rawdata.id}`);
+
+    if (result.status === 200) {
+      history.push(`/plugins/${pluginId}/paths?start=1&pageSize=10`);
+    }
   }
 
   const getPathError = () => {
@@ -113,14 +115,14 @@ const EditPathPage = ({ match }) => {
   }, []);
 
   useEffect(() => {
-    setChangesMade( initPath === path );
+    setChangesMade(initPath === path);
   }, [path])
 
   return <Layout sideNav={<Sidebar />}>
     <>
       <BaseHeaderLayout navigationAction={<Link startIcon={<ArrowLeft />} to={`/plugins/${pluginId}/paths?start=1&pageSize=10`}>
         Go back
-      </Link>} primaryAction={<Button onClick={() => savePath() } disabled={changesMade}>Save</Button>} title="Edit Path" subtitle={`MODEL UID : ${modeluid}`} as="h2" />
+      </Link>} primaryAction={<Button onClick={() => savePath()} disabled={changesMade}>Save</Button>} title="Edit Path" subtitle={`MODEL UID : ${modeluid}`} as="h2" />
       <Box padding={8} background="neutral100">
 
         <TwoColsLayout
@@ -168,7 +170,16 @@ const EditPathPage = ({ match }) => {
                 </Typography>
               </Flex>
 
-              <Button onClick={() => goToEntity()} fullWidth variant="info">Edit entity</Button>
+              <Link
+                padding={2}
+                paddingLeft={6}
+                borderColor="primary200"
+                hasRadius={true}
+                startIcon={<Pencil />}
+                to={`/content-manager/collectionType/${modeluid}/${entityid}`}
+              >
+                Edit entity
+              </Link>
 
               <Button onClick={() => confirmDelete(rawdata.id)} fullWidth variant="danger">Delete path</Button>
 
@@ -176,7 +187,7 @@ const EditPathPage = ({ match }) => {
           </Box>}
         />
       </Box>
-      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} id={deletePathId} />
+      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} onDeletePath={deletePath} id={deletePathId} />
     </>
   </Layout>
 

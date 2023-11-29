@@ -52,7 +52,7 @@ const PathsPage = () => {
   const [count, setCount] = useState(0);
   const [openConfirmDeletePath, setOpenConfirmDeletePath] = useState(false);
   const [deletePathId, setDeletePathId] = useState();
-  const { get } = useFetchClient();
+  const { get, del } = useFetchClient();
   const ROW_COUNT = 5;
   const COL_COUNT = 10;
   const urlParams = new URLSearchParams(window.location.search);
@@ -72,9 +72,16 @@ const PathsPage = () => {
   }
 
   const confirmDelete = (id) => {
-    console.log("here");
     toggleOpenConfirmDeletePath(openConfirmDeletePath)
     setDeletePathId(id);
+  }
+
+  const deletePath = async () => {
+    const result = await del(`/paths/paths/${deletePathId}`);
+
+    if (result.status === 200) {
+      setOpenConfirmDeletePath(false);
+    }
   }
 
   const toggleOpenConfirmDeletePath = (show) => {
@@ -161,7 +168,7 @@ const PathsPage = () => {
           <NextLink to="/3">Go to next page</NextLink>
         </Pagination>
       </Box>
-      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} id={deletePathId} />
+      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} onDeletePath={deletePath} id={deletePathId} />
     </>
   </Layout>
 

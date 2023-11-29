@@ -9,7 +9,7 @@ import pluginId from '../../pluginId';
 import { Dialog, DialogBody, DialogFooter, Button, Flex, Typography } from '@strapi/design-system';
 import { ExclamationMarkCircle, Trash } from '@strapi/icons';
 
-export default function ConfirmDeletePath({show, toggle, id}) {
+export default function ConfirmDeletePath({ show, toggle, onDeletePath, id }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function ConfirmDeletePath({show, toggle, id}) {
       </DialogBody>
       <DialogFooter startAction={<Button onClick={toggle} variant="tertiary">
         Cancel
-      </Button>} endAction={<Button variant="danger-light" startIcon={<Trash />}>
+      </Button>} endAction={<Button onClick={onDeletePath} variant="danger-light" startIcon={<Trash />}>
         Confirm
       </Button>} />
     </Dialog>

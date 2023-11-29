@@ -20,7 +20,7 @@ module.exports = ({ strapi }) => {
           model_uid: uid,
           entity_id: id,
           entity_title: title,
-          category: { connect: categoryId },
+          category: { connect: [categoryId] },
           is_published: isPublished
         }
       });
@@ -48,7 +48,7 @@ module.exports = ({ strapi }) => {
           entity_id: id,
           entity_title: title,
           json_category: pathBreadcrumbs,
-          category: { connect: categoryId },
+          category: { connect: [categoryId] },
           is_published: isPublished
         },
       });
@@ -61,7 +61,7 @@ module.exports = ({ strapi }) => {
             entity_id: id,
             entity_title: title,
             json_category: pathBreadcrumbs,
-            category: { connect: categoryId },
+            category: { connect: [categoryId] },
             is_published: isPublished
           }
         });

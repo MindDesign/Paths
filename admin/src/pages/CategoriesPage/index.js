@@ -143,7 +143,6 @@ const CategoriesPage = () => {
   }
 
   const confirmDelete = (id) => {
-    console.log("here");
     toggleOpenConfirmDeletePath(openConfirmDeletePath)
     setDeletePathId(id);
   }
