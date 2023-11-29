@@ -61,6 +61,8 @@ import {
 const EditPathPage = ({ match }) => {
   const [rawdata, setRawdata] = useState();
   const [path, setPath] = useState("");
+  const [initPath, setInitPath] = useState("");
+  const [changesMade, setChangesMade] = useState(false);
   const [modeluid, setModeluid] = useState("");
   const [entityid, setEntityid] = useState(0);
   const [ispublished, setIspublished] = useState(false);
@@ -75,17 +77,16 @@ const EditPathPage = ({ match }) => {
     const { data } = await get(`/paths/paths/${match.params.id}`);
     setRawdata(data);
     setPath(data.path);
+    setInitPath(data.path);
     setModeluid(data.model_uid);
     setEntityid(data.entity_id);
     setIspublished(data.is_published);
     setEntitytitle(data.entity_title);
     setJsoncategory(data.json_category);
     setDeletePathId(data.id);
-    console.log(data);
   }
 
   const confirmDelete = (id) => {
-    console.log("here");
     toggleOpenConfirmDeletePath(openConfirmDeletePath)
     setDeletePathId(id);
   }
@@ -107,21 +108,28 @@ const EditPathPage = ({ match }) => {
     return "";
   }
 
+  const savePath = () => {
+    console.log("Saving path");
+  }
+
   useEffect(() => {
     fetchPath();
   }, []);
+
+  useEffect(() => {
+    setChangesMade( initPath === path );
+  }, [path])
 
   return <Layout sideNav={<Sidebar />}>
     <>
       <BaseHeaderLayout navigationAction={<Link startIcon={<ArrowLeft />} to={`/plugins/${pluginId}/paths?start=1&pageSize=10`}>
         Go back
-      </Link>} primaryAction={<Button disabled>Save</Button>} title="Edit Path" as="h2" />
-      <Box padding={8} background="neutral100" shadow="none">
+      </Link>} primaryAction={<Button onClick={() => savePath() } disabled={changesMade}>Save</Button>} title="Edit Path" subtitle={`MODEL UID : ${modeluid}`} as="h2" />
+      <Box padding={8} background="neutral100">
 
         <TwoColsLayout
           background="neutral100"
-          shadow="none"
-          startCol={<Box background="neutral110" borderColor="neutral120" padding={8}>
+          startCol={<Box hasRadius={true} background="neutral110" borderColor="neutral150" padding={8}>
             <Box marginBottom={4}>
               <TextInput disabled placeholder="Entity title" label="Entity title" name="entitytitle" hint="Should this be editable?" error={getEntityTitleError()} onChange={(e) => setPath(e.target.value)} value={entitytitle} />
             </Box>
@@ -146,13 +154,12 @@ const EditPathPage = ({ match }) => {
               </>
             </Box>
           </Box>}
-          endCol={<Box background="neutral100" shadow="none">
-            <GridLayout direction="column" background="neutral100" shadow="none" padding={0}>
+          endCol={<Box background="neutral100">
+            <GridLayout direction="column" background="neutral100" padding={0}>
               <Flex
                 alignItems="flex-start"
                 background="neutral100"
                 borderColor="primary200"
-                boxShadow="none"
                 gap={3}
                 hasRadius
                 padding={5}
