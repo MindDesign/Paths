@@ -104,10 +104,6 @@ const EditPathPage = ({ match }) => {
     return "";
   }
 
-  const getEntityTitleError = () => {
-    return "";
-  }
-
   const savePath = () => {
     console.log("Saving path");
   }
@@ -131,16 +127,16 @@ const EditPathPage = ({ match }) => {
           background="neutral100"
           startCol={<Box hasRadius={true} background="neutral110" borderColor="neutral150" padding={8}>
             <Box marginBottom={4}>
-              <TextInput disabled placeholder="Entity title" label="Entity title" name="entitytitle" hint="Should this be editable?" error={getEntityTitleError()} onChange={(e) => setPath(e.target.value)} value={entitytitle} />
+              <TextInput disabled placeholder="Entity title" label="Entity title" name="entitytitle" hint="Should this be editable? should it even be here?" onChange={(e) => setEntitytitle(e.target.value)} value={entitytitle} />
             </Box>
             <Box marginBottom={4}>
-              <TextInput placeholder="Path" label="Path" name="path" hint="Max 140 characters" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
+              <TextInput placeholder="Path" label="Path" name="path" hint="Need to do some checking on this value" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
             </Box>
             <Box marginBottom={4}>
-              <JSONInput disabled label="JSON breadcrumbs" value={JSON.stringify(jsoncategory, null, 2)} />
+              <JSONInput disabled label="JSON breadcrumbs" hint="A hint" value={JSON.stringify(jsoncategory, null, 2)} />
             </Box>
             <Box marginBottom={4}>
-              <TextInput disabled placeholder="Model UID" label="Model UID" name="modeluid" hint="" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={modeluid} />
+              <TextInput disabled placeholder="Model UID" label="Model UID" name="modeluid" hint="" onChange={(e) => setModeluid(e.target.value)} value={modeluid} />
             </Box>
             <Box marginBottom={4}>
               <>
