@@ -16,20 +16,18 @@ So an example of a path entity is:
 
 ```
 { 
- "model_uid": "api::article.article", 
- "entity_id": "38", 
- "json_category": { 
-   "breadcrumbs": [ 
-     { 
-       "name": "Vårt ansvar", 
-       "slug": "berekraft" 
-     }, 
-     { 
-       "name": "Dyrevern", 
-       "slug": "berekraft/dyrevern" 
-     } 
-   ] 
- } 
+  "model_uid": "api::article.article", 
+  "entity_id": "38", 
+  "json_category": [ 
+    { 
+      "name": "Vårt ansvar", 
+      "slug": "berekraft" 
+    }, 
+    { 
+      "name": "Dyrevern", 
+      "slug": "berekraft/dyrevern" 
+    } 
+  ]
 }
 ```
 
