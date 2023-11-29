@@ -11,6 +11,7 @@ import pluginId from '../../pluginId';
 import getTrad from '../../utils/getTrad';
 import Sidebar from '../../components/Sidebar';
 import ConfirmDeletePath from '../../components/ConfirmDeletePath';
+import { useHistory } from "react-router-dom";
 
 import {
   Box,
@@ -68,8 +69,9 @@ const EditPathPage = ({ match }) => {
   const [openConfirmDeletePath, setOpenConfirmDeletePath] = useState(false);
   const [deletePathId, setDeletePathId] = useState(0);
   const { get } = useFetchClient();
+  const history = useHistory();
 
-  const fetchCategories = async () => {
+  const fetchPath = async () => {
     const { data } = await get(`/paths/paths/${match.params.id}`);
     setRawdata(data);
     setPath(data.path);
@@ -92,6 +94,11 @@ const EditPathPage = ({ match }) => {
     setOpenConfirmDeletePath(!show);
   }
 
+  const goToEntity = () => {
+    const url = `/content-manager/collectionType/${modeluid}/${entityid}`;
+    history.push(url);
+  }
+
   const getPathError = () => {
     return "";
   }
@@ -101,7 +108,7 @@ const EditPathPage = ({ match }) => {
   }
 
   useEffect(() => {
-    fetchCategories();
+    fetchPath();
   }, []);
 
   return <Layout sideNav={<Sidebar />}>
@@ -114,9 +121,9 @@ const EditPathPage = ({ match }) => {
         <TwoColsLayout
           background="neutral100"
           shadow="none"
-          startCol={<Box background="neutral100" padding={8}>
+          startCol={<Box background="neutral110" borderColor="neutral120" padding={8}>
             <Box marginBottom={4}>
-              <TextInput placeholder="Entity title" label="Entity title" name="entitytitle" hint="Max 140 characters" error={getEntityTitleError()} onChange={(e) => setPath(e.target.value)} value={entitytitle} />
+              <TextInput disabled placeholder="Entity title" label="Entity title" name="entitytitle" hint="Should this be editable?" error={getEntityTitleError()} onChange={(e) => setPath(e.target.value)} value={entitytitle} />
             </Box>
             <Box marginBottom={4}>
               <TextInput placeholder="Path" label="Path" name="path" hint="Max 140 characters" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
@@ -151,12 +158,14 @@ const EditPathPage = ({ match }) => {
                 padding={5}
                 paddingRight={6}
               >
-                <Typography>
+                <Typography textColor="success500">
                   {(ispublished)
-                    ? `Editing path for published entity (${entityid})`
-                    : `Editing path for unpublished entity (${entityid})`}
+                    ? `Editing path for published entity`
+                    : `Editing path for unpublished entity`}
                 </Typography>
               </Flex>
+
+              <Button onClick={() => goToEntity()} fullWidth variant="info">Edit entity</Button>
 
               <Button onClick={() => confirmDelete(rawdata.id)} fullWidth variant="danger">Delete path</Button>
 

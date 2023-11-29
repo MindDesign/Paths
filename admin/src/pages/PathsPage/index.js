@@ -71,10 +71,6 @@ const PathsPage = () => {
     setData(data);
   }
 
-  const goto = (id) => {
-    window.location.href = `paths/${id}`;
-  }
-
   const confirmDelete = (id) => {
     console.log("here");
     toggleOpenConfirmDeletePath(openConfirmDeletePath)
