@@ -19,7 +19,7 @@ export default function Index({
   value,
   attribute
 }) {
-  const { modifiedData, initialData, slug } = useCMEditViewDataManager ();
+  const { modifiedData, initialData, slug } = useCMEditViewDataManager();
 
   const [data, setData] = useState();
   const [tree, setTree] = useState();
@@ -33,13 +33,13 @@ export default function Index({
   const { formatMessage } = useIntl();
   const [err, setErr] = useState('');
   const { get } = useFetchClient();
-  
+
   // TODO: Make a setting for this
   const modelTypeSlugNames = [
     { modelName: 'api::article.article', slugName: 'slug' },
-    { modelName: 'api::page.page', slugName: 'slug'},
-    { modelName: 'api::paths.pathscategory', slugName: 'slug'},
-    { modelName: 'plugin::shopify-connect.shopify-product', slugName: 'handle'},
+    { modelName: 'api::page.page', slugName: 'slug' },
+    { modelName: 'api::paths.pathscategory', slugName: 'slug' },
+    { modelName: 'plugin::shopify-connect.shopify-product', slugName: 'handle' },
   ];
 
   useEffect(() => {
@@ -52,28 +52,26 @@ export default function Index({
   }, [breadcrumbs, path, modifiedData])
 
   const depthMap = {
-    "5" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "4" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "3" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "2" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "1" : <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+    "5": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+    "4": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+    "3": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+    "2": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+    "1": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
   }
 
   function isJson(str) {
     try {
-        JSON.parse(str);
+      JSON.parse(str);
     } catch (e) {
-        return false;
+      return false;
     }
     return true;
-	}
+  }
 
   const init = async () => {
-    console.log(modelTypeSlugNames);
-    const modelType = modelTypeSlugNames.find(o=>o.modelName === slug)
-    console.log(modelType);
+    const modelType = modelTypeSlugNames.find(o => o.modelName === slug)
     setSlugName(modelType.slugName);
-    
+
     if (initialData.path && isJson(initialData.path)) {
       setDisplayPath(JSON.parse(initialData.path).path);
       setSelectedCategoryId(JSON.parse(initialData.path).categoryId);
@@ -81,7 +79,6 @@ export default function Index({
   }
 
   const update = async () => {
-    console.log(slugName);
     if (modifiedData.path && isJson(modifiedData.path)) {
       setDisplayPath(JSON.parse(modifiedData.path).path);
       setSelectedCategoryId(JSON.parse(modifiedData.path).categoryId);
@@ -106,7 +103,7 @@ export default function Index({
         el.depthIndicator = 0;
         root[counter] = el;
         counter++;
-        return; 
+        return;
       }
 
       // Use our mapping to locate the parent element in our data array
@@ -119,7 +116,7 @@ export default function Index({
       } else {
         el.fullPath = parentEl.slug + "/" + el.slug;
       }
-        
+
       parentEl.children = [...(parentEl.children || []), el];
     });
 
@@ -130,12 +127,12 @@ export default function Index({
 
   // Build the structure for selecting category
   const buildSelectStructure = async (selectstructure, tree) => {
-    tree.map((branch) => {      
+    tree.map((branch) => {
       selectstructure.push({
-        "name": branch.name, 
-        "slug": branch.slug, 
-        "fullPath": branch.fullPath, 
-        "categoryId": branch.id, 
+        "name": branch.name,
+        "slug": branch.slug,
+        "fullPath": branch.fullPath,
+        "categoryId": branch.id,
         "depth": branch.depthIndicator
       });
       if (Array.isArray(branch.children)) {
@@ -173,15 +170,15 @@ export default function Index({
 
     crumbs.reverse();
   }
-  
+
   // Select category
   const selectCategory = async (value) => {
     const crumbs = [];
     await generateBreadcrumbs(crumbs, value);
     setBreadcrumbs(crumbs);
-    
+
     const path = crumbs[crumbs.length - 1].slug;
-    
+
     const obj = {
       "categoryId": value,
       "path": path + "/" + modifiedData[slugName],
@@ -191,22 +188,22 @@ export default function Index({
     onChange({ target: { name, value: JSON.stringify(obj), type: attribute.type } })
   }
 
-  const categoryList = categories.map(element => 
-    <SingleSelectOption value={element.categoryId} selected={element.categoryId===value}>
+  const categoryList = categories.map(element =>
+    <SingleSelectOption value={element.categoryId} selected={element.categoryId === value}>
       {depthMap[element.depth]} {element.name}
     </SingleSelectOption>
   );
 
   return (
-  <>
-    <SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={ name }
-      onChange={ selectCategory }
-      onClear={() => { setCategoryId(undefined) }} 
-      value={ selectedCategoryId }
+    <>
+      <SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={name}
+        onChange={selectCategory}
+        onClear={() => { setCategoryId(undefined) }}
+        value={selectedCategoryId}
       >
-      {categoryList}
-    </SingleSelect>
-    <Typography>{ displayPath }</Typography>
-  </>
+        {categoryList}
+      </SingleSelect>
+      <Typography>{displayPath}</Typography>
+    </>
   )
 }
