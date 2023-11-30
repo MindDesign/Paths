@@ -81,11 +81,9 @@ const EditPathPage = ({ match }) => {
     setEntitytitle(data.entity_title);
     setJsoncategory(data.json_category);
     setDeletePathId(data.id);
-    console.log(data);
   }
 
   const confirmDelete = (id) => {
-    console.log("here");
     toggleOpenConfirmDeletePath(openConfirmDeletePath)
     setDeletePathId(id);
   }
