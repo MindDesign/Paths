@@ -2,6 +2,13 @@ module.exports = {
   type: 'admin',
   routes: [{
     method: 'GET',
+    path: '/pathscategories/:id',
+    handler: 'pathsCategoryController.getCategory',
+    config: {
+      policies: []
+    }
+  }, {
+    method: 'GET',
     path: '/pathscategories',
     handler: 'pathsCategoryController.getCategories',
     config: {
