@@ -50,5 +50,21 @@ module.exports = {
     config: {
       policies: []
     }
-  }],
+  }, {
+    method: 'GET',
+    path: '/settings',
+    handler: 'pathsController.getSettings',
+    config: {
+      policies: [],
+      auth: false,
+    }
+  }, {
+    method: 'POST',
+    path: '/settings',
+    handler: 'pathsController.setSettings',
+    config: {
+      policies: [],
+      auth: false,
+    }
+  }]
 };

@@ -41,6 +41,33 @@ module.exports = createCoreController('plugin::paths.path', {
       .plugin('paths')
       .service('pathService')
       .deletePath(ctx.params.id);
-  }
+  },
+
+  async getSettings(ctx) {
+    try {
+      ctx.body = await strapi
+        .plugin('paths')
+        .service('pathService')
+        .getSettings();
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  },
+
+  async setSettings(ctx) {
+    const { body } = ctx.request;
+    try {
+      await strapi
+        .plugin('paths')
+        .service('pathService')
+        .setSettings(body);
+      ctx.body = await strapi
+        .plugin('paths')
+        .service('pathService')
+        .getSettings();
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  },
 
 });

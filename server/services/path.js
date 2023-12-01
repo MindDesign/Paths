@@ -4,6 +4,23 @@
  *  service
  */
 
+function getPluginStore() {
+  return strapi.store({
+    environment: '',
+    type: 'plugin',
+    name: 'paths',
+  });
+}
+
+async function createDefaultConfig() {
+  const pluginStore = getPluginStore();
+  const value = {
+    disabled: false,
+  };
+  await pluginStore.set({ key: 'settings', value });
+  return pluginStore.get({ key: 'settings' });
+}
+
 module.exports = {
   async getPath(id) {
     return await strapi.entityService.findOne('plugin::paths.path', id, {
@@ -43,5 +60,21 @@ module.exports = {
   // Todo: Delete path data on entity as well
   async deletePath(id) {
     return await strapi.entityService.delete('plugin::paths.path', id);
-  }
+  },
+
+  async getSettings() {
+    const pluginStore = getPluginStore();
+    let config = await pluginStore.get({ key: 'settings' });
+    if (!config) {
+      config = await createDefaultConfig();
+    }
+    return config;
+  },
+
+  async setSettings(settings) {
+    const value = settings;
+    const pluginStore = getPluginStore();
+    await pluginStore.set({ key: 'settings', value });
+    return pluginStore.get({ key: 'settings' });
+  },
 };
