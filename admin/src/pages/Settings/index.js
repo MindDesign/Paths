@@ -19,23 +19,23 @@ import {
 
 import Check from '@strapi/icons/Check';
 
-const SettingsPage = () => {
+const Settings = () => {
   const [settings, setSettings] = useState();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
 
   useEffect(() => {
-    pathsRequests.getSettings().then(res => {
-      setSettings(res.data.settings);
+    pathsRequests.getSettings().then((data) => {
+      setSettings(data);
       setIsLoading(false);
     });
   }, [setSettings]);
 
   const handleSubmit = async () => {
     setIsSaving(true);
-    const res = await pathsRequests.setSettings(settings);
-    setSettings(res.data.settings);
+    const data = await pathsRequests.setSettings(settings);
+    setSettings(data);
     setIsSaving(false);
     toggleNotification({
       type: 'success',
@@ -103,4 +103,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default Settings;

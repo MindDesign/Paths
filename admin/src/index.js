@@ -3,7 +3,6 @@ import pluginPkg from '../../package.json';
 import pluginId from './pluginId';
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
-import Input from './components/Input';
 
 const name = pluginPkg.strapi.name;
 
@@ -68,7 +67,7 @@ export default {
           id: 'settings',
           to: `/settings/${pluginId}`,
           Component: async () => {
-            return import('./pages/SettingsPage');
+            return import('./pages/Settings');
           },
         },
       ]

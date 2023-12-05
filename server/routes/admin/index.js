@@ -53,18 +53,16 @@ module.exports = {
   }, {
     method: 'GET',
     path: '/settings',
-    handler: 'pathsController.getSettings',
+    handler: 'settingsController.getSettings',
     config: {
-      policies: [],
-      auth: false,
+      policies: []
     }
   }, {
     method: 'POST',
     path: '/settings',
-    handler: 'pathsController.setSettings',
+    handler: 'settingsController.setSettings',
     config: {
-      policies: [],
-      auth: false,
+      policies: []
     }
   }]
 };
