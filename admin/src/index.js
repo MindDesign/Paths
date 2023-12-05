@@ -11,8 +11,8 @@ export default {
 
     app.customFields.register({
       name: "path",
-      pluginId: pluginId, 
-      type: "string", 
+      pluginId: pluginId,
+      type: "string",
       intlLabel: {
         id: "paths.path.id",
         defaultMessage: "Path",
@@ -49,7 +49,30 @@ export default {
         // },
       ],
     });
-    
+
+    app.createSettingSection(
+      {
+        id: pluginId,
+        intlLabel: {
+          id: `${pluginId}.plugin.name`,
+          defaultMessage: 'Paths',
+        },
+      },
+      [
+        {
+          intlLabel: {
+            id: `${pluginId}.plugin.name`,
+            defaultMessage: 'General settings',
+          },
+          id: 'settings',
+          to: `/settings/${pluginId}`,
+          Component: async () => {
+            return import('./pages/Settings');
+          },
+        },
+      ]
+    );
+
     app.registerPlugin({
       id: pluginId,
       initializer: Initializer,
@@ -59,7 +82,8 @@ export default {
 
   },
 
-  bootstrap(app) {},
+  bootstrap(app) { },
+
   async registerTrads({ locales }) {
     const importedTrads = await Promise.all(
       locales.map((locale) => {

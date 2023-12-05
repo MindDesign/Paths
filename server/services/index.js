@@ -2,8 +2,10 @@
 
 const pathService = require('./path');
 const pathsCategoryService = require('./category');
+const settingsService = require('./settings');
 
 module.exports = {
   pathService,
-  pathsCategoryService
+  pathsCategoryService,
+  settingsService
 };
