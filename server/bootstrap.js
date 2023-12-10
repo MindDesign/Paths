@@ -28,13 +28,20 @@ module.exports = ({ strapi }) => {
     },
 
     async afterUpdate(event) {
+      console.log(event.result);
       const { uid } = event.model;
-      const { id, path, publishedAt, title, categoryId } = event.result;
-      const isPublished = publishedAt !== null;
+      const { id, path, publishedAt, title } = event.result;
       const pathObject = JSON.parse(path);
-      const pathPath = pathObject.path;
-      const pathBreadcrumbs = pathObject.breadcrumbs;
-
+      const data = {
+        path: pathObject.path,
+        model_uid: uid,
+        entity_id: id,
+        entity_title: title,
+        json_category: pathObject.breadcrumbs,
+        category: { id: pathObject.categoryId },
+        is_published: publishedAt !== null
+      };
+      
       let entry = await strapi.db.query('plugin::paths.path').update({
         where: {
           $and: [
@@ -42,28 +49,11 @@ module.exports = ({ strapi }) => {
             { entity_id: id }
           ]
         },
-        data: {
-          path: pathPath,
-          model_uid: uid,
-          entity_id: id,
-          entity_title: title,
-          json_category: pathBreadcrumbs,
-          category: { connect: [categoryId] },
-          is_published: isPublished
-        },
+        data
       });
-
       if (entry === null) {
         entry = await strapi.entityService.create('plugin::paths.path', {
-          data: {
-            path: pathPath,
-            model_uid: uid,
-            entity_id: id,
-            entity_title: title,
-            json_category: pathBreadcrumbs,
-            category: { connect: [categoryId] },
-            is_published: isPublished
-          }
+          data
         });
       }
 

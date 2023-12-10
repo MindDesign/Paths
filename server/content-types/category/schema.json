@@ -31,10 +31,6 @@
       "relation": "oneToMany",
       "target": "plugin::paths.pathscategory",
       "mappedBy": "parent"
-    },
-    "path": {
-      "type": "customField",
-      "customField": "plugin::paths.path"
     }
   }
 }
