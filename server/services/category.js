@@ -8,7 +8,7 @@ module.exports = {
 
   async getCategory(id) {
     return await strapi.entityService.findOne('plugin::paths.pathscategory', id, {
-      populate: { parent: true }
+      populate: { parent: true, children: true }
     });
   },
 

@@ -21,7 +21,7 @@ import {
   TwoColsLayout,
   GridLayout,
   TextInput,
-  SingleSelect, 
+  SingleSelect,
   SingleSelectOption,
   Link
 } from '@strapi/design-system';
@@ -29,11 +29,11 @@ import {
 import { ArrowLeft } from '@strapi/icons';
 
 const EditCategoryPage = ({ match }) => {
-  const [rawdata, setRawdata] = useState();
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [parent, setParent] = useState({});
+  const [children, setChildren] = useState([]);
   const [categories, setCategories] = useState([]);
   const [changesMade, setChangesMade] = useState(false);
   const { get, del } = useFetchClient();
@@ -42,11 +42,11 @@ const EditCategoryPage = ({ match }) => {
 
   const fetchCategory = async () => {
     const { data } = await get(`/paths/categories/${match.params.id}`);
-    setRawdata(data);
     setId(data.id);
     setName(data.name);
     setSlug(data.slug);
     setParent(data.parent);
+    setChildren(data.children);
   }
 
   const fetchCategories = async () => {
@@ -64,7 +64,7 @@ const EditCategoryPage = ({ match }) => {
   }
 
   const deletePath = async () => {
-    const result = await del(`/paths/paths/${rawdata.id}`);
+    const result = await del(`/paths/paths/${id}`);
 
     if (result.status === 200) {
       history.push(`/plugins/${pluginId}/paths?start=1&pageSize=10`);
@@ -75,12 +75,14 @@ const EditCategoryPage = ({ match }) => {
     fetchCategory();
     fetchCategories();
   }, []);
-  
+
   useEffect(() => {
     console.log("id", id);
     console.log("categories", categories);
+    console.log("parent", parent);
+    console.log("children", children);
     parentList = categories.map(element =>
-      <SingleSelectOption value={element.id} selected={element.id === parent.id}>
+      <SingleSelectOption value={element.id} selected={element.id === parent?.id}>
         {element.name}
       </SingleSelectOption>
     );
@@ -105,13 +107,13 @@ const EditCategoryPage = ({ match }) => {
               <TextInput placeholder="Category slug" label="Slug" name="slug" hint="What?" onChange={(e) => setPath(e.target.value)} value={slug} />
             </Box>
             <Box marginBottom={4}>
-              <SingleSelect 
-                label="Parent category" 
-                placeholder="Parent category..." 
+              <SingleSelect
+                label="Parent category"
+                placeholder="Parent category..."
                 name="parent"
-                //onChange={selectCategory}
-                //onClear={() => { setCategoryId(undefined) }}
-                //value={selectedCategoryId}
+              //onChange={selectCategory}
+              //onClear={() => { setCategoryId(undefined) }}
+              //value={selectedCategoryId}
               >
                 {parentList}
               </SingleSelect>
@@ -131,7 +133,7 @@ const EditCategoryPage = ({ match }) => {
                 <Typography>a tree representation of parent and childs of this category</Typography>
               </Flex>
 
-              <Button onClick={() => confirmDelete(rawdata.id)} fullWidth variant="danger">Delete category</Button>
+              <Button onClick={() => confirmDelete(id)} fullWidth variant="danger">Delete category</Button>
 
             </GridLayout>
           </Box>}
