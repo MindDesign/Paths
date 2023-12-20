@@ -4,6 +4,11 @@
  *  service
  */
 module.exports = {
+
+  async postPath({ }) {
+    // save path or update path
+  },
+
   async getPath(id) {
     return await strapi.entityService.findOne('plugin::paths.path', id, {
       populate: { category: true },

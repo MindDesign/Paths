@@ -62,7 +62,7 @@ const PathsPage = () => {
   const start = (currentPage * pageSize) - pageSize;
 
   const fetchCount = async () => {
-    const count = await get(`/paths/pathscount`);
+    const count = await get(`/paths/paths/count`);
     setCount(count.data);
   }
 

@@ -72,7 +72,7 @@ const CategoriesPage = () => {
   }
 
   const fetchCount = async () => {
-    const count = await get(`/paths/categoriescount`);
+    const count = await get(`/paths/categories/count`);
     setCount(count.data);
   }
 
@@ -134,7 +134,7 @@ const CategoriesPage = () => {
   }
 
   const fetchCategories = async () => {
-    const { data } = await get(`/paths/pathscategories?page=${start}&pageSize=${pageSize}`);
+    const { data } = await get(`/paths/categories?page=${start}&pageSize=${pageSize}`);
     setData(data);
     const root = await buildTreeStructure(data);
     const selectstructure = [];

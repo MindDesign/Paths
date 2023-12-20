@@ -2,14 +2,14 @@ module.exports = {
   type: 'admin',
   routes: [{
     method: 'GET',
-    path: '/pathscategories/:id',
+    path: '/categories/:id',
     handler: 'pathsCategoryController.getCategory',
     config: {
       policies: []
     }
   }, {
     method: 'GET',
-    path: '/pathscategories',
+    path: '/categories',
     handler: 'pathsCategoryController.getCategories',
     config: {
       policies: [],
@@ -17,8 +17,15 @@ module.exports = {
     }
   }, {
     method: 'GET',
-    path: '/categoriescount',
+    path: '/categories/count',
     handler: 'pathsCategoryController.getCategoriesCount',
+    config: {
+      policies: []
+    }
+  }, {
+    method: 'POST',
+    path: '/paths',
+    handler: 'pathsController.postPath',
     config: {
       policies: []
     }
@@ -38,7 +45,7 @@ module.exports = {
     }
   }, {
     method: 'GET',
-    path: '/pathscount',
+    path: '/paths/count',
     handler: 'pathsController.getPathsCount',
     config: {
       policies: []

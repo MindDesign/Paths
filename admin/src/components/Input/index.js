@@ -1,26 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useIntl } from 'react-intl';
 import { useFetchClient, useCMEditViewDataManager } from '@strapi/helper-plugin';
-import {
-  SingleSelect,
-  SingleSelectOption,
-  Typography
-} from '@strapi/design-system';
+import { SingleSelect, SingleSelectOption, Typography } from '@strapi/design-system';
 
-export default function Index({
-  description,
-  disabled,
-  error,
-  intlLabel,
-  name,
-  onChange,
-  placeholder,
-  required,
-  value,
-  attribute
-}) {
-  const { modifiedData, initialData, slug } = useCMEditViewDataManager();
-
+export default function Index() {
+  const { modifiedData, initialData, allLayoutData, slug } = useCMEditViewDataManager();
+  const [modelName, setModelName] = useState(allLayoutData?.contentType?.uid);
   const [data, setData] = useState();
   const [tree, setTree] = useState();
   const [categories, setCategories] = useState([]);
@@ -33,6 +18,8 @@ export default function Index({
   const { formatMessage } = useIntl();
   const [err, setErr] = useState('');
   const { get } = useFetchClient();
+
+  console.log("modifiedData", modifiedData, "initialData", initialData, "allLayoutData", allLayoutData, "slug", slug);
 
   // TODO: Make a setting for this
   const modelTypeSlugNames = [
@@ -143,12 +130,14 @@ export default function Index({
 
   // Get categories
   const getCategories = async () => {
-    const { data } = await get('/paths/pathscategories');
+    const { data } = await get('/paths/categories');
     setData(data);
     const root = await buildTreeStructure(data);
     const selectstructure = [];
     await buildSelectStructure(selectstructure, root);
     setCategories(selectstructure);
+
+    console.log(selectstructure);
   }
 
   // Generate breadcrumbs (selected category and all its parents)
@@ -169,6 +158,8 @@ export default function Index({
     }
 
     crumbs.reverse();
+
+    console.log(crumbs);
   }
 
   // Select category
@@ -185,7 +176,7 @@ export default function Index({
       "breadcrumbs": crumbs
     }
     setPath(JSON.stringify(obj));
-    onChange({ target: { name, value: JSON.stringify(obj), type: attribute.type } })
+    //onChange({ target: { name, value: JSON.stringify(obj), type: modelName } })
   }
 
   const categoryList = categories.map(element =>
@@ -196,7 +187,10 @@ export default function Index({
 
   return (
     <>
-      <SingleSelect label="Velg kategori" placeholder="Velg kategori..." name={name}
+      <SingleSelect 
+        label="Velg kategori" 
+        placeholder="Velg kategori..." 
+        name={name}
         onChange={selectCategory}
         onClear={() => { setCategoryId(undefined) }}
         value={selectedCategoryId}

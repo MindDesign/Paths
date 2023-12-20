@@ -8,71 +8,50 @@ import React, { useState, useEffect } from 'react';
 // import PropTypes from 'prop-types';
 import { useFetchClient } from '@strapi/helper-plugin';
 import pluginId from '../../pluginId';
-import getTrad from '../../utils/getTrad';
 import Sidebar from '../../components/Sidebar';
-import ConfirmDeletePath from '../../components/ConfirmDeletePath';
 import { useHistory } from "react-router-dom";
 
 import {
   Box,
-  Table,
-  Thead,
-  Tbody,
-  TFooter,
-  Tr,
-  Td,
-  Th,
-  IconButton,
-  BaseCheckbox,
   Typography,
-  VisuallyHidden,
-  Avatar,
   Flex,
   Layout,
   BaseHeaderLayout,
   Button,
-  Dots,
-  NextLink,
-  PageLink,
-  Pagination,
-  PreviousLink,
   TwoColsLayout,
   GridLayout,
-  Alert,
   TextInput,
-  Information,
-  Checkbox,
-  Textarea,
-  Tooltip,
-  JSONInput
+  SingleSelect, 
+  SingleSelectOption,
+  Link
 } from '@strapi/design-system';
 
-import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem, Link } from '@strapi/design-system/v2';
-
-import {
-  Plus,
-  ArrowLeft,
-  CarretDown,
-  Pencil,
-  Trash
-} from '@strapi/icons';
+import { ArrowLeft } from '@strapi/icons';
 
 const EditCategoryPage = ({ match }) => {
   const [rawdata, setRawdata] = useState();
+  const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [path, setPath] = useState("");
+  const [parent, setParent] = useState({});
+  const [categories, setCategories] = useState([]);
   const [changesMade, setChangesMade] = useState(false);
   const { get, del } = useFetchClient();
   const history = useHistory();
+  let parentList;
 
   const fetchCategory = async () => {
-    const { data } = await get(`/paths/pathscategories/${match.params.id}`);
+    const { data } = await get(`/paths/categories/${match.params.id}`);
     setRawdata(data);
+    setId(data.id);
     setName(data.name);
     setSlug(data.slug);
-    setPath(data.path);
-    console.log(data);
+    setParent(data.parent);
+  }
+
+  const fetchCategories = async () => {
+    const { data } = await get(`/paths/categories`);
+    setCategories(data);
   }
 
   const confirmDelete = (id) => {
@@ -94,7 +73,20 @@ const EditCategoryPage = ({ match }) => {
 
   useEffect(() => {
     fetchCategory();
+    fetchCategories();
   }, []);
+  
+  useEffect(() => {
+    console.log("id", id);
+    console.log("categories", categories);
+    parentList = categories.map(element =>
+      <SingleSelectOption value={element.id} selected={element.id === parent.id}>
+        {element.name}
+      </SingleSelectOption>
+    );
+    console.log(parentList)
+  }, [id, categories])
+
 
   return <Layout sideNav={<Sidebar />}>
     <>
@@ -113,7 +105,16 @@ const EditCategoryPage = ({ match }) => {
               <TextInput placeholder="Category slug" label="Slug" name="slug" hint="What?" onChange={(e) => setPath(e.target.value)} value={slug} />
             </Box>
             <Box marginBottom={4}>
-              <TextInput disabled placeholder="Path" label="Path" name="path" hint="" onChange={(e) => setModeluid(e.target.value)} value={path} />
+              <SingleSelect 
+                label="Parent category" 
+                placeholder="Parent category..." 
+                name="parent"
+                //onChange={selectCategory}
+                //onClear={() => { setCategoryId(undefined) }}
+                //value={selectedCategoryId}
+              >
+                {parentList}
+              </SingleSelect>
             </Box>
           </Box>}
           endCol={<Box background="neutral100">

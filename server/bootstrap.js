@@ -28,7 +28,7 @@ module.exports = ({ strapi }) => {
     },
 
     async afterUpdate(event) {
-      console.log(event.result);
+      //console.log(event.result);
       const { uid } = event.model;
       const { id, path, publishedAt, title } = event.result;
       const pathObject = JSON.parse(path);
