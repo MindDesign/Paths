@@ -38,7 +38,6 @@ const EditCategoryPage = ({ match }) => {
   const [changesMade, setChangesMade] = useState(false);
   const { get, del } = useFetchClient();
   const history = useHistory();
-  let parentList;
 
   const fetchCategory = async () => {
     const { data } = await get(`/paths/categories/${match.params.id}`);
@@ -76,16 +75,17 @@ const EditCategoryPage = ({ match }) => {
     fetchCategories();
   }, []);
 
+  const parentList = categories.map(element =>
+    <SingleSelectOption value={element.id} selected={element.id === parent?.id}>
+      {element.name}
+    </SingleSelectOption>
+  );
+
   useEffect(() => {
     console.log("id", id);
     console.log("categories", categories);
     console.log("parent", parent);
     console.log("children", children);
-    parentList = categories.map(element =>
-      <SingleSelectOption value={element.id} selected={element.id === parent?.id}>
-        {element.name}
-      </SingleSelectOption>
-    );
     console.log(parentList)
   }, [id, categories])
 
