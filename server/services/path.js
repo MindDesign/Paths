@@ -6,11 +6,29 @@
 module.exports = {
 
   async postPath({ }) {
-    // save path or update path
+    // save path
+  },
+
+  async putPath(id, data) {
+    // update path
+    console.log(id, data);
   },
 
   async getPath(id) {
     return await strapi.entityService.findOne('plugin::paths.path', id, {
+      populate: { category: true },
+    });
+  },
+
+  async getPathByEntity({ id, model }) {
+    return await strapi.db.query('plugin::paths.path').findOne({
+      select: ['path', 'json_category', 'category'],
+      where: {
+        $and: [
+          { entity_id: id },
+          { model_uid: model }
+        ]
+      },
       populate: { category: true },
     });
   },

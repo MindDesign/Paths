@@ -30,9 +30,23 @@ module.exports = {
       policies: []
     }
   }, {
+    method: 'PUT',
+    path: '/paths/:id',
+    handler: 'pathsController.putPath',
+    config: {
+      policies: []
+    }
+  }, {
     method: 'GET',
     path: '/paths/:id',
     handler: 'pathsController.getPath',
+    config: {
+      policies: []
+    }
+  }, {
+    method: 'GET',
+    path: 'paths/by_entity',
+    handler: 'pathsController.getPathByEntity',
     config: {
       policies: []
     }

@@ -15,11 +15,25 @@ module.exports = createCoreController('plugin::paths.path', {
       .postPath(ctx.request.query)
   },
 
+  async putPath(ctx) {
+    ctx.body = await strapi
+      .plugin('paths')
+      .service('pathService')
+      .putPath(ctx.params.id, ctx.request.query)
+  },
+
   async getPath(ctx) {
     ctx.body = await strapi
       .plugin('paths')
       .service('pathService')
       .getPath(ctx.params.id);
+  },
+
+  async getPathByEntity(ctx) {
+    ctx.body = await strapi
+      .plugin('paths')
+      .service('pathService')
+      .getPathByEntity(ctx.request.query);
   },
 
   async getPaths(ctx) {

@@ -31,7 +31,8 @@ export default function Index() {
 
   useEffect(() => {
     init();
-    getCategories()
+    getCategories();
+    getPath();
   }, []);
 
   useEffect(() => {
@@ -128,6 +129,13 @@ export default function Index() {
     });
   }
 
+  // Get path for entity
+  const getPath = async () => {
+    const { data } = await get(`/paths/paths/by_entity?id=${initialData.id}&model=${slug}`);
+
+    console.log(data);
+  }
+
   // Get categories
   const getCategories = async () => {
     const { data } = await get('/paths/categories');
@@ -187,9 +195,9 @@ export default function Index() {
 
   return (
     <>
-      <SingleSelect 
-        label="Velg kategori" 
-        placeholder="Velg kategori..." 
+      <SingleSelect
+        label="Velg kategori"
+        placeholder="Velg kategori..."
         name={name}
         onChange={selectCategory}
         onClear={() => { setCategoryId(undefined) }}

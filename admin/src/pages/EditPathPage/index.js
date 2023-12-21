@@ -15,79 +15,62 @@ import { useHistory } from "react-router-dom";
 
 import {
   Box,
-  Table,
-  Thead,
-  Tbody,
-  TFooter,
-  Tr,
-  Td,
-  Th,
-  IconButton,
-  BaseCheckbox,
   Typography,
-  VisuallyHidden,
-  Avatar,
   Flex,
   Layout,
   BaseHeaderLayout,
   Button,
-  Dots,
-  NextLink,
-  PageLink,
-  Pagination,
-  PreviousLink,
   TwoColsLayout,
   GridLayout,
-  Alert,
   TextInput,
-  Information,
   Checkbox,
-  Textarea,
-  Tooltip,
   JSONInput
 } from '@strapi/design-system';
 
-import { Breadcrumbs, Crumb, CrumbLink, CrumbSimpleMenu, MenuItem, Link } from '@strapi/design-system/v2';
+import { Link } from '@strapi/design-system/v2';
 
 import {
-  Plus,
   ArrowLeft,
-  CarretDown,
   Pencil,
   Trash
 } from '@strapi/icons';
 
 const EditPathPage = ({ match }) => {
-  const [rawdata, setRawdata] = useState();
-  const [path, setPath] = useState("");
-  const [initPath, setInitPath] = useState("");
+  const [id, setId] = useState(0);
+  const [path, setPath] = useState({});
+  const [initPath, setInitPath] = useState({});
   const [changesMade, setChangesMade] = useState(false);
-  const [modeluid, setModeluid] = useState("");
-  const [entityid, setEntityid] = useState(0);
-  const [ispublished, setIspublished] = useState(false);
-  const [entitytitle, setEntitytitle] = useState("");
-  const [jsoncategory, setJsoncategory] = useState({});
   const [openConfirmDeletePath, setOpenConfirmDeletePath] = useState(false);
-  const [deletePathId, setDeletePathId] = useState(0);
-  const { get, del } = useFetchClient();
+  const { get, put, del } = useFetchClient();
   const history = useHistory();
 
   const fetchPath = async () => {
     const { data } = await get(`/paths/paths/${match.params.id}`);
-    setRawdata(data);
-    setPath(data.path);
-    setInitPath(data.path);
-    setModeluid(data.model_uid);
-    setEntityid(data.entity_id);
-    setIspublished(data.is_published);
-    setEntitytitle(data.entity_title);
-    setJsoncategory(data.json_category);
-    setDeletePathId(data.id);
+    setId(data.id);
+    setPath(data);
+    setInitPath(data);
+  }
+
+  /**
+   * TODO: Fix. It is not working.
+   */
+  const updatePath = async () => {
+    const res = await put(`/paths/paths/${match.params.id}`, {
+      body: {
+        data: {
+          path: path.path,
+          json_category: path.json_category,
+          model_uid: path.model_uid,
+          is_published: path.is_published
+        }
+      }
+    });
+
+    console.log(res);
   }
 
   const confirmDelete = (id) => {
     toggleOpenConfirmDeletePath(openConfirmDeletePath)
-    setDeletePathId(id);
   }
 
   const toggleOpenConfirmDeletePath = (show) => {
@@ -95,7 +78,7 @@ const EditPathPage = ({ match }) => {
   }
 
   const deletePath = async () => {
-    const result = await del(`/paths/paths/${rawdata.id}`);
+    const result = await del(`/paths/paths/${id}`);
 
     if (result.status === 200) {
       history.push(`/plugins/${pluginId}/paths?start=1&pageSize=10`);
@@ -107,7 +90,7 @@ const EditPathPage = ({ match }) => {
   }
 
   const savePath = () => {
-    console.log("Saving path");
+    updatePath();
   }
 
   useEffect(() => {
@@ -122,32 +105,29 @@ const EditPathPage = ({ match }) => {
     <>
       <BaseHeaderLayout navigationAction={<Link startIcon={<ArrowLeft />} to={`/plugins/${pluginId}/paths?start=1&pageSize=10`}>
         Go back
-      </Link>} primaryAction={<Button onClick={() => savePath()} disabled={changesMade}>Save</Button>} title="Edit Path" subtitle={`MODEL UID : ${modeluid}`} as="h2" />
+      </Link>} primaryAction={<Button onClick={() => savePath()} disabled={changesMade}>Save</Button>} title="Edit Path" subtitle={`MODEL UID : ${path.model_uid}`} as="h2" />
       <Box padding={8} background="neutral100">
 
         <TwoColsLayout
           background="neutral100"
           startCol={<Box hasRadius={true} background="neutral110" borderColor="neutral150" padding={8}>
             <Box marginBottom={4}>
-              <TextInput disabled placeholder="Entity title" label="Entity title" name="entitytitle" hint="Should this be editable? should it even be here?" onChange={(e) => setEntitytitle(e.target.value)} value={entitytitle} />
+              <TextInput placeholder="Path" label="Path" name="path" hint="Need to do some checking on this value" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path.path} />
             </Box>
             <Box marginBottom={4}>
-              <TextInput placeholder="Path" label="Path" name="path" hint="Need to do some checking on this value" error={getPathError()} onChange={(e) => setPath(e.target.value)} value={path} />
+              <JSONInput disabled label="JSON breadcrumbs" hint="A hint" name="json_category" value={JSON.stringify(path.json_category, null, 2)} />
             </Box>
             <Box marginBottom={4}>
-              <JSONInput disabled label="JSON breadcrumbs" hint="A hint" value={JSON.stringify(jsoncategory, null, 2)} />
-            </Box>
-            <Box marginBottom={4}>
-              <TextInput disabled placeholder="Model UID" label="Model UID" name="modeluid" hint="" onChange={(e) => setModeluid(e.target.value)} value={modeluid} />
+              <TextInput disabled placeholder="Model UID" label="Model UID" name="model_uid" hint="" onChange={(e) => setModeluid(e.target.value)} value={path.model_uid} />
             </Box>
             <Box marginBottom={4}>
               <>
                 <Checkbox
-                  value={ispublished}
-                  key={rawdata?.id}
+                  value={path.is_published}
+                  key={id}
                   disabled={true}
                 >
-                  <Typography>Is entity path belongs to ublished?</Typography>
+                  <Typography>Is entity path belongs to published?</Typography>
                 </Checkbox>
               </>
             </Box>
@@ -164,7 +144,7 @@ const EditPathPage = ({ match }) => {
                 paddingRight={6}
               >
                 <Typography textColor="success500">
-                  {(ispublished)
+                  {(path.is_published)
                     ? `Editing path for published entity`
                     : `Editing path for unpublished entity`}
                 </Typography>
@@ -176,18 +156,18 @@ const EditPathPage = ({ match }) => {
                 borderColor="primary200"
                 hasRadius={true}
                 startIcon={<Pencil />}
-                to={`/content-manager/collectionType/${modeluid}/${entityid}`}
+                to={`/content-manager/collectionType/${path.model_uid}/${path.entity_id}`}
               >
                 Edit entity
               </Link>
 
-              <Button onClick={() => confirmDelete(rawdata.id)} fullWidth variant="danger">Delete path</Button>
+              <Button onClick={() => confirmDelete(id)} fullWidth variant="danger" startIcon={<Trash />}>Delete path</Button>
 
             </GridLayout>
           </Box>}
         />
       </Box>
-      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} onDeletePath={deletePath} id={deletePathId} />
+      <ConfirmDeletePath show={openConfirmDeletePath} toggle={toggleOpenConfirmDeletePath} onDeletePath={deletePath} id={id} />
     </>
   </Layout>
 

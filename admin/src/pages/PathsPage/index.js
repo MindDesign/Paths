@@ -109,9 +109,6 @@ const PathsPage = () => {
                 <Typography variant="sigma">ID</Typography>
               </Th>
               <Th>
-                <Typography variant="sigma">Title</Typography>
-              </Th>
-              <Th>
                 <Typography variant="sigma">Path</Typography>
               </Th>
               <Th>
@@ -129,9 +126,6 @@ const PathsPage = () => {
               </Td>
               <Td onClick={() => history.push(`paths/${entry.id}`)}>
                 <Typography textColor="neutral800">{entry.id}</Typography>
-              </Td>
-              <Td onClick={() => history.push(`paths/${entry.id}`)}>
-                <Typography textColor="neutral800">{entry.entity_title}</Typography>
               </Td>
               <Td onClick={() => history.push(`paths/${entry.id}`)}>
                 <Typography textColor="neutral800">{entry.path}</Typography>

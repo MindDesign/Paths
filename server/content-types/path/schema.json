@@ -28,9 +28,6 @@
     "entity_id": {
       "type": "biginteger"
     },
-    "entity_title": {
-      "type": "string"
-    },
     "json_category": {
       "type": "json"
     },
