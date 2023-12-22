@@ -22,7 +22,7 @@ module.exports = {
 
   async getPathByEntity({ id, model }) {
     return await strapi.db.query('plugin::paths.path').findOne({
-      select: ['path', 'json_category', 'category'],
+      select: ['path', 'json_category'],
       where: {
         $and: [
           { entity_id: id },

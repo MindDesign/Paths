@@ -131,9 +131,9 @@ export default function Index() {
 
   // Get path for entity
   const getPath = async () => {
-    const { data } = await get(`/paths/paths/by_entity?id=${initialData.id}&model=${slug}`);
+    const { data } = await get(`/paths/pathbyentity?id=${initialData.id}&model=${slug}`);
 
-    console.log(data);
+    console.log("data: " + data);
   }
 
   // Get categories
@@ -171,7 +171,7 @@ export default function Index() {
   }
 
   // Select category
-  const selectCategory = async (value) => {
+  const selectCategory = async (value=null) => {
     const crumbs = [];
     await generateBreadcrumbs(crumbs, value);
     setBreadcrumbs(crumbs);
@@ -188,7 +188,7 @@ export default function Index() {
   }
 
   const categoryList = categories.map(element =>
-    <SingleSelectOption value={element.categoryId} selected={element.categoryId === value}>
+    <SingleSelectOption value={element.categoryId} selected={element.categoryId === 1}>
       {depthMap[element.depth]} {element.name}
     </SingleSelectOption>
   );

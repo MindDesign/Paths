@@ -38,15 +38,15 @@ module.exports = {
     }
   }, {
     method: 'GET',
-    path: '/paths/:id',
-    handler: 'pathsController.getPath',
+    path: '/pathbyentity',
+    handler: 'pathsController.getPathByEntity',
     config: {
       policies: []
     }
   }, {
     method: 'GET',
-    path: 'paths/by_entity',
-    handler: 'pathsController.getPathByEntity',
+    path: '/paths/:id',
+    handler: 'pathsController.getPath',
     config: {
       policies: []
     }
