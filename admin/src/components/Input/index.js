@@ -1,10 +1,18 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { useIntl } from 'react-intl';
-import { useFetchClient, useCMEditViewDataManager } from '@strapi/helper-plugin';
-import { SingleSelect, SingleSelectOption, Typography } from '@strapi/design-system';
+import React, { useState, useEffect, Fragment } from "react";
+import { useIntl } from "react-intl";
+import {
+  useFetchClient,
+  useCMEditViewDataManager,
+} from "@strapi/helper-plugin";
+import {
+  SingleSelect,
+  SingleSelectOption,
+  Typography,
+} from "@strapi/design-system";
 
 export default function Index() {
-  const { modifiedData, initialData, allLayoutData, slug } = useCMEditViewDataManager();
+  const { modifiedData, initialData, allLayoutData, slug } =
+    useCMEditViewDataManager();
   const [modelName, setModelName] = useState(allLayoutData?.contentType?.uid);
   const [data, setData] = useState();
   const [tree, setTree] = useState();
@@ -16,17 +24,33 @@ export default function Index() {
   const [slugName, setSlugName] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const { formatMessage } = useIntl();
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState("");
   const { get } = useFetchClient();
 
-  console.log("modifiedData", modifiedData, "initialData", initialData, "allLayoutData", allLayoutData, "slug", slug);
+  console.log(
+    "modifiedData",
+    modifiedData,
+    "initialData",
+    initialData,
+    "allLayoutData",
+    allLayoutData,
+    "slug",
+    slug
+  );
 
   // TODO: Make a setting for this
   const modelTypeSlugNames = [
-    { modelName: 'api::article.article', slugName: 'slug' },
-    { modelName: 'api::page.page', slugName: 'slug' },
-    { modelName: 'api::paths.pathscategory', slugName: 'slug' },
-    { modelName: 'plugin::shopify-connect.shopify-product', slugName: 'handle' },
+    { modelName: "api::article.article", slugName: "slug" },
+    { modelName: "api::page.page", slugName: "slug" },
+    { modelName: "api::paths.pathscategory", slugName: "slug" },
+    {
+      modelName: "plugin::shopify-connect.shopify-product",
+      slugName: "handle",
+    },
+    {
+      modelName: "plugin::shopify-connect.shopify-collection",
+      slugName: "handle",
+    },
   ];
 
   useEffect(() => {
@@ -37,15 +61,27 @@ export default function Index() {
 
   useEffect(() => {
     update();
-  }, [breadcrumbs, path, modifiedData])
+  }, [breadcrumbs, path, modifiedData]);
 
   const depthMap = {
-    "5": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "4": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "3": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "2": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-    "1": <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
-  }
+    5: (
+      <Fragment>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </Fragment>
+    ),
+    4: (
+      <Fragment>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </Fragment>
+    ),
+    3: (
+      <Fragment>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </Fragment>
+    ),
+    2: <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+    1: <Fragment>&nbsp;&nbsp;&nbsp;&nbsp;</Fragment>,
+  };
 
   function isJson(str) {
     try {
@@ -57,21 +93,21 @@ export default function Index() {
   }
 
   const init = async () => {
-    const modelType = modelTypeSlugNames.find(o => o.modelName === slug)
+    const modelType = modelTypeSlugNames.find((o) => o.modelName === slug);
     setSlugName(modelType.slugName);
 
     if (initialData.path && isJson(initialData.path)) {
       setDisplayPath(JSON.parse(initialData.path).path);
       setSelectedCategoryId(JSON.parse(initialData.path).categoryId);
     }
-  }
+  };
 
   const update = async () => {
     if (modifiedData.path && isJson(modifiedData.path)) {
       setDisplayPath(JSON.parse(modifiedData.path).path);
       setSelectedCategoryId(JSON.parse(modifiedData.path).categoryId);
     }
-  }
+  };
 
   // Lets create a tree of our categories
   // Reference: https://typeofnan.dev/an-easy-way-to-build-a-tree-with-object-references/
@@ -111,34 +147,36 @@ export default function Index() {
     setTree(root);
 
     return root;
-  }
+  };
 
   // Build the structure for selecting category
   const buildSelectStructure = async (selectstructure, tree) => {
     tree.map((branch) => {
       selectstructure.push({
-        "name": branch.name,
-        "slug": branch.slug,
-        "fullPath": branch.fullPath,
-        "categoryId": branch.id,
-        "depth": branch.depthIndicator
+        name: branch.name,
+        slug: branch.slug,
+        fullPath: branch.fullPath,
+        categoryId: branch.id,
+        depth: branch.depthIndicator,
       });
       if (Array.isArray(branch.children)) {
         buildSelectStructure(selectstructure, branch.children);
       }
     });
-  }
+  };
 
   // Get path for entity
   const getPath = async () => {
-    const { data } = await get(`/paths/pathbyentity?id=${initialData.id}&model=${slug}`);
+    const { data } = await get(
+      `/paths/pathbyentity?id=${initialData.id}&model=${slug}`
+    );
 
     console.log("data: " + data);
-  }
+  };
 
   // Get categories
   const getCategories = async () => {
-    const { data } = await get('/paths/categories');
+    const { data } = await get("/paths/categories");
     setData(data);
     const root = await buildTreeStructure(data);
     const selectstructure = [];
@@ -146,21 +184,23 @@ export default function Index() {
     setCategories(selectstructure);
 
     console.log(selectstructure);
-  }
+  };
 
   // Generate breadcrumbs (selected category and all its parents)
   const generateBreadcrumbs = async (crumbs, categoryId) => {
     let currentCategory = data.filter((el) => el.id == categoryId)[0];
     crumbs.push({
-      "name": currentCategory.name,
-      "slug": currentCategory.fullPath
+      name: currentCategory.name,
+      slug: currentCategory.fullPath,
     });
 
     while (currentCategory.parent !== null) {
-      let curEl = data.filter((el) => { return el.id === currentCategory.parent.id });
+      let curEl = data.filter((el) => {
+        return el.id === currentCategory.parent.id;
+      });
       crumbs.push({
-        "name": curEl[0].name,
-        "slug": curEl[0].fullPath
+        name: curEl[0].name,
+        slug: curEl[0].fullPath,
       });
       currentCategory = curEl[0];
     }
@@ -168,10 +208,10 @@ export default function Index() {
     crumbs.reverse();
 
     console.log(crumbs);
-  }
+  };
 
   // Select category
-  const selectCategory = async (value=null) => {
+  const selectCategory = async (value = null) => {
     const crumbs = [];
     await generateBreadcrumbs(crumbs, value);
     setBreadcrumbs(crumbs);
@@ -179,19 +219,22 @@ export default function Index() {
     const path = crumbs[crumbs.length - 1].slug;
 
     const obj = {
-      "categoryId": value,
-      "path": path + "/" + modifiedData[slugName],
-      "breadcrumbs": crumbs
-    }
+      categoryId: value,
+      path: path + "/" + modifiedData[slugName],
+      breadcrumbs: crumbs,
+    };
     setPath(JSON.stringify(obj));
     //onChange({ target: { name, value: JSON.stringify(obj), type: modelName } })
-  }
+  };
 
-  const categoryList = categories.map(element =>
-    <SingleSelectOption value={element.categoryId} selected={element.categoryId === 1}>
+  const categoryList = categories.map((element) => (
+    <SingleSelectOption
+      value={element.categoryId}
+      selected={element.categoryId === 1}
+    >
       {depthMap[element.depth]} {element.name}
     </SingleSelectOption>
-  );
+  ));
 
   return (
     <>
@@ -200,12 +243,14 @@ export default function Index() {
         placeholder="Velg kategori..."
         name={name}
         onChange={selectCategory}
-        onClear={() => { setCategoryId(undefined) }}
+        onClear={() => {
+          setCategoryId(undefined);
+        }}
         value={selectedCategoryId}
       >
         {categoryList}
       </SingleSelect>
       <Typography>{displayPath}</Typography>
     </>
-  )
+  );
 }
